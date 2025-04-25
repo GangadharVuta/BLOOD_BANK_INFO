@@ -1,0 +1,237 @@
+/* Layout Container */
+.donor-profile-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #dc3545;
+  color: #fff;
+  padding: 15px 30px;
+}
+
+.logo {
+  height: 40px;
+}
+
+.nav-links a {
+  color: #e53935;
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard Grid */
+.dashboard {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 220px;
+  background-color: #f8d7da;
+  /* light red background */
+  padding: 30px 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  min-height: calc(100vh - 60px);
+  /* Adjust based on navbar height */
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  padding: 15px 25px;
+  color: #dc3545;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar nav ul li:hover {
+  background-color: #f1b0b7;
+}
+
+.sidebar nav ul li.active {
+  background-color: #dc3545;
+  color: #fff;
+  font-weight: bold;
+  border-left: 4px solid #fff;
+}
+
+/* Main Section */
+.main {
+  flex: 1;
+  padding: 30px;
+}
+
+/* Header Section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header p {
+  margin: 5px 0 0;
+  color: #666;
+}
+
+.edit-icon {
+  color: #dc3545;
+  text-decoration: none;
+}
+
+.edit-icon:hover {
+  color: #c82333;
+}
+
+/* Profile Grid/Card */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.profile-card {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.profile-pic {
+  width: 100px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.profile-card p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+/* General container for edit profile page */
+.edit-profile-container {
+  width: 45%;
+  margin: 65px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form title */
+.edit-profile-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+/* Form styling */
+.edit-profile-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Label styling */
+.edit-profile-container label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* Input field styling */
+.edit-profile-container input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Input field focus effect */
+.edit-profile-container input:focus {
+  outline: none;
+  border-color: #c82333;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Button styling */
+.edit-profile-container button {
+  padding: 12px;
+  font-size: 18px;
+  background-color: #c82333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.edit-profile-container button:hover {
+  background-color: #c82333;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .edit-profile-container {
+    width: 90%;
+  }
+
+  .edit-profile-container form {
+    gap: 15px;
+  }
+
+  .edit-profile-container label,
+  .edit-profile-container input {
+    font-size: 14px;
+  }
+
+  .edit-profile-container button {
+    font-size: 16px;
+  }
+}

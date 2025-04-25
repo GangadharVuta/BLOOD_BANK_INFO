@@ -1,0 +1,90 @@
+/* LoginPage.css */
+* {
+    box-sizing: border-box;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: linear-gradient(to right, #f8f9fa, #e0eafc);
+}
+
+.login-box {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #333;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.login-box input:focus {
+    border-color: #dc3545;
+    /* red */
+}
+
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    background-color: #dc3545;
+    /* red */
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+.login-box button:hover {
+    background-color: #c82333;
+    /* darker red */
+}
+
+.login-box p {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.login-box a {
+    color: #dc3545;
+    /* red */
+    text-decoration: none;
+}
+
+.login-box a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .login-box {
+        padding: 30px 20px;
+    }
+
+    .login-box h2 {
+        font-size: 22px;
+    }
+}
