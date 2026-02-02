@@ -1,0 +1,116 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Dashboard Layout */
+.dashboard {
+    display: flex;
+}
+
+.responsive-layout {
+    display: flex;
+    flex-grow: 1;
+}
+
+/* My Requests Section */
+.my-requests-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    padding: 10px 15px;
+    background-color: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-buttons button:hover {
+    background-color: #b71c1c;
+}
+
+.donor-table-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.donor-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.donor-table-wrapper th,
+.donor-table-wrapper td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.donor-table-wrapper th {
+    background-color: #f4f4f4;
+}
+
+.donor-table-wrapper tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Pie Chart Section */
+.chart-container {
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pie-chart-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.pie-chart-wrapper h3 {
+    color: #333;
+    font-size: 20px;
+    margin: 0;
+}
+
+.pie-chart-wrapper canvas {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        padding: 15px;
+    }
+
+    .pie-chart-wrapper canvas {
+        max-width: 300px;
+        max-height: 300px;
+    }
+}
