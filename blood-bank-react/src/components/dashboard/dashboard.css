@@ -25,6 +25,18 @@ body {
     overflow-y: auto;
 }
 
+.my-requests-container h2 {
+    color: #333;
+}
+
+.my-requests-container h3 {
+    color: #333;
+}
+
+.my-requests-container p {
+    color: #555;
+}
+
 .filter-buttons {
     display: flex;
     gap: 15px;
@@ -38,10 +50,11 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .filter-buttons button:hover {
-    background-color: #b71c1c;
+    background-color: #8b1515;
 }
 
 .donor-table-wrapper {
@@ -64,14 +77,21 @@ body {
     padding: 12px;
     text-align: left;
     border: 1px solid #ddd;
+    color: #333;
 }
 
 .donor-table-wrapper th {
     background-color: #f4f4f4;
+    color: #000;
+    font-weight: bold;
 }
 
 .donor-table-wrapper tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+
+.donor-table-wrapper tr:hover {
+    background-color: #f0f0f0;
 }
 
 /* Pie Chart Section */
@@ -97,11 +117,49 @@ body {
     color: #333;
     font-size: 20px;
     margin: 0;
+    font-weight: bold;
 }
 
 .pie-chart-wrapper canvas {
     max-width: 400px;
     max-height: 400px;
+}
+
+.request-donors-section {
+    width: 100%;
+    max-width: 1000px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.request-donors-section h3 {
+    color: #333;
+    margin-top: 0;
+}
+
+.request-donors-section p {
+    color: #555;
+}
+
+.request-donors-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.request-donors-section th,
+.request-donors-section td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.request-donors-section th {
+    background-color: #f4f4f4;
+    color: #000;
+    font-weight: bold;
 }
 
 @media (max-width: 768px) {

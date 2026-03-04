@@ -2,9 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { getFcmToken } from "./firebase";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './context/ThemeContext';
 import './styles/theme.css';
-import './styles/darkMode.css';
 import './styles/responsive.css';
 
 import Navbar from './components/navBar/Navbar';
@@ -20,11 +18,9 @@ import DonorList from './components/donorList/donorList';
 import RequestForm from './components/requestForm/requestForm';
 import RequestBloodPage from './components/requestBlood/RequestBloodPage';
 import Dashboard from './components/dashboard/dashboard';
-import NearbyBloodBanks from './components/nearbyBloodBanks/NearbyBloodBanks';
+import NearbyBloodBanks from './components/nearbyBloodBanks/nearbyBloodBanks';
 import AddDonor from './components/donor/AddDonor';
 import ListDonors from './components/donor/ListDonors';
-
-
 
 function App() {
 
@@ -94,31 +90,27 @@ const saveFcmToken = async (token) => {
   }
 };
 
-
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutUsPage />} />
-          <Route path="/faqs" element={<FAQsPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/profile" element={<DonorProfile />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/request-blood" element={<RequestBloodPage />} />
-          <Route path="/request-blood-form" element={<RequestForm />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/nearby-blood-banks" element={<NearbyBloodBanks />} />
-          <Route path="/add-donor" element={<AddDonor />} />
-          <Route path="/list-donors" element={<ListDonors />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/faqs" element={<FAQsPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/profile" element={<DonorProfile />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/request-blood" element={<RequestBloodPage />} />
+        <Route path="/request-blood-form" element={<RequestForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/nearby-blood-banks" element={<NearbyBloodBanks />} />
+        <Route path="/add-donor" element={<AddDonor />} />
+        <Route path="/list-donors" element={<ListDonors />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
 export default App;
-

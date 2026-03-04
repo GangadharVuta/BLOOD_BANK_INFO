@@ -1,13 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ThemeContext } from '../../context/ThemeContext';
 import './Navbar.css';
 import Logo from '../../assets/logo.png';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [openMenu, setOpenMenu] = useState(false);
   const isLoggedIn = !!localStorage.getItem('token');
 
@@ -40,16 +38,6 @@ const Navbar = () => {
         <div className="navbar-brand" onClick={() => handleLinkClick('/')}>
           <img src={Logo} alt="BloodConnect Logo" className="navbar-logo-img" />
         </div>
-
-        {/* Theme Toggle Button */}
-        <button
-          className="theme-toggle-btn"
-          onClick={toggleTheme}
-          title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          aria-label="Toggle theme"
-        >
-          {isDarkMode ? '☀️' : '🌙'}
-        </button>
 
         {/* Hamburger Menu */}
         <button

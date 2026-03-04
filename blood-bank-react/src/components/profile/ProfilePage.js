@@ -1,19 +1,17 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ThemeContext } from '../../context/ThemeContext';
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
-    const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
                 const token = localStorage.getItem('token');
-                
+
                 if (!token) {
-                    setError('Not authenticated. Please login first.');
+                    setError('Not authenticated. Please login first.');        
                     return;
                 }
 
@@ -23,7 +21,7 @@ const ProfilePage = () => {
                         'Content-Type': 'application/json',
                     }
                 });
-                
+
                 if (response.data.status === 1) {
                     setUser(response.data.data);
                 } else {
@@ -35,7 +33,7 @@ const ProfilePage = () => {
                     setError('Session expired. Please login again.');
                     localStorage.removeItem('token');
                 } else {
-                    setError('Access denied or error fetching profile.');
+                    setError('Access denied or error fetching profile.');      
                 }
             }
         };
@@ -50,21 +48,6 @@ const ProfilePage = () => {
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h2>Welcome, {user.userName}</h2>
-                <button 
-                    onClick={toggleTheme}
-                    style={{
-                        padding: '10px 15px',
-                        borderRadius: '5px',
-                        border: '1px solid var(--border-color)',
-                        backgroundColor: 'var(--button-bg)',
-                        color: 'white',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: 'bold'
-                    }}
-                >
-                    {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-                </button>
             </div>
             <p>Email: {user.emailId}</p>
         </div>
