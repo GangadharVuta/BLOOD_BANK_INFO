@@ -1,0 +1,409 @@
+/* ========================================
+   BloodConnect Navbar - Professional Medical UI
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Main Navbar Container */
+.navbar {
+  background: linear-gradient(135deg, #d62839 0%, #c82333 100%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
+
+/* Brand/Logo Styling */
+.navbar-brand {
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Ensure brand fills navbar height so logo can size to it */
+.navbar-brand {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  user-select: none;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-brand:hover .navbar-logo {
+  transform: scale(1.05);
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Logo image helper */
+.navbar-logo-img {
+  width: auto;
+  display: block;
+  border-radius: 6px;
+  object-fit: contain;
+  max-height: 90%;
+}
+
+/* Navigation Menu */
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  gap: 0;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation Links */
+.navbar-link {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 22px 18px;
+  font-weight: 600;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  border-bottom: 3px solid transparent;
+  position: relative;
+  letter-spacing: 0.35px;
+}
+
+/* Hover Effect - Smooth background color change */
+.navbar-link:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Active Link Styling */
+.navbar-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-bottom-color: #ffffff;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Smooth Transition Effect */
+.navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background-color: rgba(255, 204, 204, 0.8);
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.navbar-link:not(.active):hover::after {
+  width: 60%;
+  left: 20%;
+}
+
+/* Auth Links - Different styling */
+.navbar-link.auth-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin: 0 8px;
+  padding: 8px 16px;
+  height: auto;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.navbar-link.auth-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-link.auth-link.active {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Navbar Divider */
+.navbar-divider {
+  width: 1px;
+  height: 35px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 12px;
+  display: none;
+}
+
+/* Hamburger Menu (Mobile) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 6px;
+  padding: 8px;
+  transition: all 0.3s ease;
+}
+
+.hamburger span {
+  width: 28px;
+  height: 3px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -8px);
+}
+
+/* ========================================
+   Responsive Design - Tablet
+   ======================================== */
+
+@media (max-width: 960px) {
+  .navbar-container {
+    height: 60px;
+    padding: 0 16px;
+  }
+
+  .navbar-logo {
+    font-size: 1.3em;
+  }
+
+  .navbar-logo-img {
+    height: 34px;
+  }
+
+  .navbar-link {
+    padding: 18px 14px;
+    font-size: 0.9em;
+  }
+
+  .navbar-link.auth-link {
+    padding: 6px 12px;
+    margin: 0 4px;
+  }
+
+  .navbar-divider {
+    margin: 0 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .navbar-menu {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #d62839 0%, #c82333 100%);
+    flex-direction: column;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    gap: 0;
+  }
+
+  .navbar-menu.active {
+    max-height: 500px;
+  }
+
+  .navbar-item {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar-link {
+    width: 100%;
+    padding: 16px 20px;
+    border-bottom: none;
+    border-left: 4px solid transparent;
+    border-radius: 0;
+  }
+
+  .navbar-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .navbar-link.active {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-left-color: #ffffff;
+  }
+
+  .navbar-link::after {
+    display: none;
+  }
+
+  .navbar-divider {
+    width: 100%;
+    height: 1px;
+    margin: 0;
+    display: block;
+  }
+
+  .navbar-link.auth-link {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    border-left: 4px solid transparent;
+    margin: 0;
+    padding: 16px 20px 16px 40px;
+  }
+
+  .navbar-link.auth-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+    border-left-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .navbar-link.auth-link.active {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-left-color: #ffffff;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    height: 56px;
+    padding: 0 12px;
+  }
+
+  .navbar-logo {
+    font-size: 1.1em;
+  }
+
+  .navbar-logo-img {
+    height: 28px;
+  }
+  /* logo-only on small screens */
+
+  .hamburger span {
+    width: 24px;
+    height: 2.5px;
+    gap: 4px;
+  }
+
+  .navbar-link {
+    padding: 14px 16px;
+    font-size: 0.85em;
+    font-weight: 500;
+  }
+
+  .navbar-menu.active {
+    max-height: 400px;
+  }
+}
+
+/* ========================================
+   Focus States for Accessibility
+   ======================================== */
+
+.navbar-link:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: -2px;
+}
+
+.hamburger:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .theme-toggle-btn {
+    margin-right: 5px;
+    width: 36px;
+    height: 36px;
+    font-size: 1em;
+  }
+}
+
+/* ========================================
+   Dark Mode Support (Optional)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    background: linear-gradient(135deg, #a01e27 0%, #8b1a1f 100%);
+  }
+
+  .navbar-menu {
+    background: linear-gradient(135deg, #a01e27 0%, #8b1a1f 100%);
+  }
+}

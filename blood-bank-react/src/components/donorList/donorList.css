@@ -1,0 +1,157 @@
+/* donorList.css */
+/* Filter form */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #f87171;
+    border-radius: 0.375rem;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5);
+}
+
+.submit-button {
+    background-color: #dc2626;
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+    background-color: #b91c1c;
+}
+
+/* Table styling */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #fecaca;
+}
+
+th {
+    background-color: #fecaca;
+    color: #7f1d1d;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #fee2e2;
+}
+
+.text-red-700 {
+    color: #b91c1c;
+}
+
+.donor-filter-form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    /* optional: wrap on small screens */
+    margin-bottom: 1.5rem;
+}
+
+.form-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-item input,
+.form-item select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-width: 160px;
+}
+
+.submit-button {
+    background-color: #d32f2f;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.submit-button:hover {
+    background-color: #b71c1c;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.donor-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* horizontally center */
+    justify-content: center;
+    /* vertically center (optional) */
+    padding: 2rem;
+    flex: 1;
+    width: 100%;
+}
+
+.donor-table-wrapper {
+    overflow-x: auto;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 800px;
+    /* control max width for centered appearance */
+}
+
+.donor-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.donor-table th,
+.donor-table td {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+}
+
+.donor-filter-form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: 1rem;
+}
+
+.raise-request-action {
+    margin-top: 2rem;
+    text-align: center;
+}

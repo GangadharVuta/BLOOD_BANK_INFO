@@ -1,0 +1,133 @@
+/* ===========================================
+   Button Component Styles
+   =========================================== */
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Size Variants */
+.btn-small {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.btn-medium {
+  padding: 12px 24px;
+  font-size: 0.95rem;
+}
+
+.btn-large {
+  padding: 14px 32px;
+  font-size: 1.05rem;
+}
+
+/* Full Width */
+.btn-full-width {
+  width: 100%;
+}
+
+/* Type Variants */
+.btn-primary {
+  background: var(--button-bg);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(200, 35, 51, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(200, 35, 51, 0.3);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--button-bg);
+  transform: translateY(-2px);
+}
+
+.btn-call {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-call:hover:not(:disabled) {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-request {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--button-bg);
+}
+
+.btn-request:hover:not(:disabled) {
+  background: var(--button-bg);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(200, 35, 51, 0.3);
+}
+
+.btn-request.active {
+  background: var(--button-bg);
+  color: white;
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #da190b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(244, 67, 54, 0.3);
+}
+
+/* Responsive Button Sizing */
+@media (max-width: 768px) {
+  .btn-large {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+
+  .btn-medium {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    padding: 10px 16px !important;
+    font-size: 0.85rem !important;
+  }
+}

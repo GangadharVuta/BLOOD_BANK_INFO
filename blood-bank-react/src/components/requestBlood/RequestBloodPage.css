@@ -1,0 +1,610 @@
+/* ===========================================
+   Request Blood Page - Responsive Design
+   =========================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.request-blood-page {
+  display: flex;
+  min-height: calc(100vh - 70px);
+  background-color: var(--bg-primary);
+}
+
+.request-blood-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+/* ========== HEADER ========== */
+.request-header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: fadeInDown 0.6s ease;
+}
+
+.request-header h1 {
+  font-size: 2.5rem;
+  color: var(--button-bg);
+  margin-bottom: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.request-header p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ========== FILTERS SECTION ========== */
+.filters-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+  background: var(--bg-secondary);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  animation: slideInUp 0.6s ease;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.search-input,
+.filter-select {
+  padding: 12px 15px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.search-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: var(--button-bg);
+  box-shadow: 0 0 0 3px rgba(214, 40, 57, 0.1);
+  background-color: var(--input-bg);
+}
+
+.filter-info {
+  grid-column: 1 / -1;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.filter-info strong {
+  color: var(--button-bg);
+  font-weight: 700;
+}
+
+/* ========== LOADING STATE ========== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e0e0e0;
+  border-top: 4px solid #d62839;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-state p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+/* ========== ERROR & NO RESULTS STATES ========== */
+.error-state,
+.no-donors-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.error-state p,
+.no-donors-state p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.retry-btn {
+  padding: 12px 30px;
+  background: var(--button-bg);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(214, 40, 57, 0.3);
+}
+
+/* ========== DONORS GRID ========== */
+.donors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+  animation: fadeIn 0.6s ease 0.2s both;
+}
+
+/* ========== DONOR CARD ========== */
+.donor-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: all 0.3s ease;
+  position: relative;
+  border: 2px solid transparent;
+  overflow: hidden;
+}
+
+.donor-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(214, 40, 57, 0.15);
+}
+
+.donor-card.selected {
+  border-color: var(--button-bg);
+  background: var(--bg-primary);
+}
+
+/* Selection Checkbox */
+.donor-checkbox {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #d62839;
+}
+
+/* Donor Badge */
+.donor-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.donor-badge.registered {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.donor-badge.added {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+/* Donor Info */
+.donor-info {
+  margin-bottom: 20px;
+}
+
+.donor-name {
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.donor-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.donor-detail .label {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.donor-detail .value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Blood Group Badge */
+.blood-group-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #d62839 0%, #c82333 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* Availability Badge */
+.availability-badge {
+  display: inline-block;
+  background: #4caf50;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Donor Actions */
+.donor-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.call-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.call-btn:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+}
+
+.request-btn {
+  background: #e0e0e0;
+  color: #333;
+  border: 2px solid #d62839;
+}
+
+.request-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-2px);
+}
+
+.request-btn.active {
+  background: #d62839;
+  color: white;
+  box-shadow: 0 6px 12px rgba(214, 40, 57, 0.3);
+}
+
+/* ========== REQUEST BUTTON CONTAINER ========== */
+.request-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  animation: slideInUp 0.6s ease;
+}
+
+.submit-request-btn {
+  padding: 15px 40px;
+  background: linear-gradient(135deg, #d62839 0%, #c82333 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-request-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(214, 40, 57, 0.3);
+}
+
+.submit-request-btn:active {
+  transform: translateY(-1px);
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablet (960px and below) */
+@media (max-width: 960px) {
+  .request-blood-content {
+    padding: 20px;
+  }
+
+  .request-header h1 {
+    font-size: 2rem;
+  }
+
+  .donors-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .filters-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .filter-info {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  .request-blood-page {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .request-blood-content {
+    padding: 15px;
+  }
+
+  .request-header {
+    margin-bottom: 25px;
+  }
+
+  .request-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .request-header p {
+    font-size: 0.95rem;
+  }
+
+  .donors-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .filters-section {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .donor-card {
+    padding: 20px;
+  }
+
+  .donor-name {
+    font-size: 1.1rem;
+  }
+
+  .action-btn {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+
+  .donor-detail {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .submit-request-btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+    width: 100%;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .request-blood-content {
+    padding: 12px;
+  }
+
+  .request-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .request-header p {
+    font-size: 0.9rem;
+  }
+
+  .donors-grid {
+    gap: 12px;
+  }
+
+  .donor-card {
+    padding: 15px;
+  }
+
+  .donor-name {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .donor-detail {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+
+  .donor-actions {
+    gap: 8px;
+    margin-top: 15px;
+    padding-top: 15px;
+  }
+
+  .action-btn {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+  }
+
+  .filter-group label {
+    font-size: 0.9rem;
+  }
+
+  .search-input,
+  .filter-select {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .donor-checkbox {
+    width: 18px;
+    height: 18px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .submit-request-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ========== DARK MODE SUPPORT ========== */
+@media (prefers-color-scheme: dark) {
+  .request-blood-page {
+    background: linear-gradient(135deg, #1a1a1a 0%, #252a3a 100%);
+  }
+
+  .request-header h1 {
+    color: #ff4757;
+  }
+
+  .donor-card {
+    background: #2d2d2d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .donor-name {
+    color: #fff;
+  }
+
+  .donor-detail .label {
+    color: #aaa;
+  }
+
+  .donor-detail .value {
+    color: #ddd;
+  }
+
+  .filters-section {
+    background: #2d2d2d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .search-input,
+  .filter-select {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #444;
+  }
+
+  .search-input:focus,
+  .filter-select:focus {
+    border-color: #ff4757;
+    background: #1f1f1f;
+  }
+
+  .error-state,
+  .no-donors-state {
+    background: #2d2d2d;
+  }
+
+  .request-button-container {
+    background: #2d2d2d;
+  }
+}

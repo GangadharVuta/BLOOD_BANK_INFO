@@ -1,0 +1,557 @@
+/* List Donors Component Styles */
+.list-donors-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.list-donors-header {
+  background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+  color: white;
+  padding: 40px 30px;
+  text-align: center;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: -20px;
+  position: relative;
+  z-index: 1;
+}
+
+.list-donors-header h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.list-donors-header p {
+  font-size: 1em;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+.list-donors-content {
+  max-width: 1200px;
+  margin: 20px auto 0;
+  background-color: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  position: relative;
+  z-index: 0;
+}
+
+/* Controls Section */
+.list-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.search-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-section label {
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.blood-group-filter {
+  padding: 10px 14px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1em;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #333;
+}
+
+.blood-group-filter:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.2);
+}
+
+.btn-add-donor {
+  padding: 12px 24px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-add-donor:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Error Alert */
+.error-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  border-left: 4px solid #dc3545;
+  margin-bottom: 20px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-icon {
+  font-size: 1.2em;
+  flex-shrink: 0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #dc3545;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  font-size: 1.1em;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Donors Table */
+.donors-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.donors-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.donors-table thead {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.donors-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.donors-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #dee2e6;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.donors-table tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+/* Blood Group Badge */
+.blood-group-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-edit {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #218838;
+  box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+}
+
+.btn-delete {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #ff5252;
+  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
+}
+
+/* Edit Mode */
+.edit-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95em;
+  font-family: inherit;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 4px rgba(220, 53, 69, 0.2);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-save,
+.btn-cancel-edit {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: #218838;
+}
+
+.btn-cancel-edit {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-cancel-edit:hover {
+  background-color: #5a6268;
+}
+
+/* No Donors State */
+.no-donors {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.no-donors-icon {
+  font-size: 4em;
+  margin-bottom: 10px;
+}
+
+.no-donors p {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.no-donors-hint {
+  font-size: 0.95em;
+  color: #bbb;
+  margin-bottom: 20px;
+}
+
+.btn-add-first {
+  padding: 12px 24px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-add-first:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Results Info */
+.results-info {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 0.95em;
+  border-top: 1px solid #eee;
+  margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .list-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .search-section {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .blood-group-filter {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .btn-add-donor {
+    width: 100%;
+  }
+
+  .donors-table th,
+  .donors-table td {
+    padding: 12px;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 768px) {
+  .list-donors-container {
+    padding: 20px 15px;
+  }
+
+  .list-donors-header {
+    padding: 30px 20px;
+  }
+
+  .list-donors-header h1 {
+    font-size: 1.5em;
+  }
+
+  .list-donors-content {
+    padding: 20px;
+  }
+
+  .list-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .search-section {
+    width: 100%;
+  }
+
+  .blood-group-filter,
+  .btn-add-donor {
+    width: 100%;
+  }
+
+  .donors-table-container {
+    border: none;
+  }
+
+  .donors-table {
+    font-size: 0.85em;
+  }
+
+  .donors-table th,
+  .donors-table td {
+    padding: 10px 8px;
+  }
+
+  .donors-table th {
+    font-size: 0.8em;
+  }
+
+  .blood-group-badge {
+    font-size: 0.8em;
+    padding: 4px 8px;
+  }
+
+  .action-buttons {
+    gap: 4px;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    padding: 6px 8px;
+    font-size: 0.75em;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-donors-container {
+    padding: 15px;
+  }
+
+  .list-donors-header {
+    padding: 20px 15px;
+    margin-bottom: -15px;
+  }
+
+  .list-donors-header h1 {
+    font-size: 1.2em;
+  }
+
+  .list-donors-header p {
+    font-size: 0.9em;
+  }
+
+  .list-donors-content {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .list-controls {
+    gap: 10px;
+  }
+
+  .search-section {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-section label {
+    width: 100%;
+  }
+
+  .blood-group-filter,
+  .btn-add-donor {
+    width: 100%;
+    font-size: 0.95em;
+  }
+
+  /* Mobile Table - Card View */
+  .donors-table-container {
+    display: none;
+  }
+
+  .donors-table tbody tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .donors-table thead {
+    display: none;
+  }
+
+  .donors-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .donors-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #666;
+    min-width: 100px;
+  }
+
+  .donors-table tbody tr:hover {
+    background-color: white;
+  }
+
+  .blood-group-badge {
+    font-size: 0.85em;
+  }
+
+  .action-buttons {
+    width: 100%;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+
+  .no-donors-icon {
+    font-size: 3em;
+  }
+
+  .btn-add-first {
+    width: 100%;
+  }
+}

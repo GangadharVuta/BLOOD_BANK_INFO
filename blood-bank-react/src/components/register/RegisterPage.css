@@ -1,0 +1,196 @@
+/* ===== Base Reset ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f9;
+}
+
+/* ===== Container ===== */
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* ===== Card ===== */
+.register-box {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Header ===== */
+.register-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.register-header .logo {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+.register-header h1 {
+  font-size: 22px;
+  margin: 5px 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+/* ===== Form Sections ===== */
+.form-section {
+  margin-top: 10px;
+}
+
+.form-section h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ===== Inputs ===== */
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #e53935;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
+
+/* ===== Phone Input ===== */
+.phone-input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.country-code {
+  padding: 10px 12px;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  font-size: 14px;
+}
+
+.phone-input-wrapper input {
+  border-radius: 0 6px 6px 0;
+  border-left: none;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background-color: #e53935;
+  color: white;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+/* ===== OTP Actions ===== */
+.otp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== Verified Badge ===== */
+.verified-badge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* ===== Footer ===== */
+.register-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.register-footer a {
+  color: #e53935;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* =========================
+   RESPONSIVE BREAKPOINTS
+   ========================= */
+
+/* Tablets */
+@media (min-width: 600px) {
+  .register-box {
+    padding: 30px;
+  }
+
+  .register-header h1 {
+    font-size: 24px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 992px) {
+  .register-container {
+    background: linear-gradient(135deg, #f44336, #e57373);
+  }
+
+  .register-box {
+    max-width: 520px;
+  }
+}

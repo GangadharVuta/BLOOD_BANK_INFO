@@ -1,0 +1,140 @@
+/* HomePage.css */
+
+.home-container {
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e53935;
+    padding: 10px 20px;
+    color: #0e0d0d;
+}
+
+.logo {
+    height: 50px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #161616;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0e0d0d;
+}
+
+.register-nav-btn {
+    background-color: white;
+    color: #e53935;
+    border: 2px solid white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.register-nav-btn:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.register-nav-btn:hover:not(:disabled) {
+    background-color: hsl(0, 87%, 50%);
+    color: #f5f0f0;
+}
+
+.card-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.info-card {
+    background-color: #fff0f0;
+    border: 1px solid #ffcccc;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(229, 57, 53, 0.1);
+    transition: transform 0.2s;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.login-btn {
+    background-color: #e53935;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #c62828;
+}
+
+.advantages-section {
+    padding: 40px 20px;
+    background-color: #fff3f3;
+    text-align: center;
+}
+
+.advantages-section h2 {
+    color: #b30000;
+    margin-bottom: 30px;
+}
+
+.advantages-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.advantage-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease-in-out;
+}
+
+.advantage-card:hover {
+    transform: translateY(-5px);
+}
+
+.advantage-card h3 {
+    color: #b30000;
+    margin-bottom: 10px;
+}
+
+.advantage-card p {
+    color: #444;
+    font-size: 15px;
+}

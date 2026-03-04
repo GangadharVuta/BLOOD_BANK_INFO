@@ -1,0 +1,308 @@
+/* Global Dark Mode Styles - Applied to all components */
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Navbar/Header Styles */
+nav, header, .navbar {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+nav a, header a, .navbar a {
+  color: var(--text-primary);
+}
+
+nav a:hover, header a:hover, .navbar a:hover {
+  color: var(--link-hover);
+}
+
+/* Sidebar Styles */
+.sidebar {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar a, .sidebar button {
+  color: var(--text-primary);
+}
+
+.sidebar a:hover, .sidebar button:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--link-hover);
+}
+
+/* Forms and Inputs */
+input, textarea, select {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--link-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Buttons */
+button {
+  background-color: var(--button-bg);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--button-hover);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Secondary Buttons */
+.secondary-button, button.secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.secondary-button:hover, button.secondary:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Cards and Containers */
+.card, .container, .card-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--card-bg);
+}
+
+thead {
+  background-color: var(--table-header-bg);
+  color: var(--text-primary);
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:hover {
+  background-color: var(--table-row-hover);
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  color: var(--text-primary);
+}
+
+/* Links */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* Alerts and Messages */
+.alert, .message, .error {
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+
+.alert-error, .error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+.alert-success {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+  border: 1px solid #2ecc71;
+}
+
+.alert-warning {
+  background-color: rgba(241, 196, 15, 0.1);
+  color: #f1c40f;
+  border: 1px solid #f1c40f;
+}
+
+.alert-info {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+  border: 1px solid #3498db;
+}
+
+/* Modal and Dialog */
+.modal, .dialog {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.modal-header, .dialog-header {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Badge */
+.badge {
+  background-color: var(--button-bg);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* Code and Pre */
+code, pre {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Dropdown and Select */
+select, .dropdown {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+/* Progress Bar */
+.progress {
+  background-color: var(--bg-secondary);
+}
+
+.progress-bar {
+  background-color: var(--button-bg);
+}
+
+/* Divider */
+hr, .divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Typography - Heading Colors */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
+
+p, span, li {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+
+/* Helper Classes */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.border {
+  border: 1px solid var(--border-color);
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Checkbox and Radio */
+input[type="checkbox"], input[type="radio"] {
+  accent-color: var(--button-bg);
+}
+
+/* Search Input */
+.search-input, input[type="search"] {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.search-input::placeholder, input[type="search"]::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Loading Spinner */
+.spinner, .loader {
+  border: 3px solid var(--bg-secondary);
+  border-top: 3px solid var(--button-bg);
+  border-radius: 50%;
+}
+
+/* List Styles */
+ul, ol {
+  color: var(--text-primary);
+}
+
+li {
+  color: var(--text-primary);
+}
+
+/* Blockquote */
+blockquote {
+  border-left: 4px solid var(--button-bg);
+  padding-left: 16px;
+  color: var(--text-secondary);
+}

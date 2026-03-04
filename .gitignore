@@ -1,0 +1,35 @@
+# System and OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+build/
+dist/
+.cache/
+
+# User and system files
+AppData/
+.vscode/extensions/
+
+# Chrome User Data
+Google/
+
+# Firebase service account (DO NOT COMMIT)
+serviceAccountKey.json

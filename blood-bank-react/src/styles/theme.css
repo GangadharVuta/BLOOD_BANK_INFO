@@ -1,0 +1,124 @@
+/* Theme Variables for Dark Mode */
+
+:root {
+  /* Dark-first palette matching Request Blood page design */
+  
+  /* Background Colors */
+  --bg-primary: #121212;
+  --bg-secondary: #1f1f1f;
+  --bg-tertiary: #2a2a2a;
+  
+  /* Text Colors */
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+  
+  /* Border & Shadow */
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  
+  /* Button Colors */
+  --button-bg: #c82333; /* Deep red - primary CTA */
+  --button-hover: #a71e2a; /* Darker red on hover */
+  
+  /* Input Colors */
+  --input-bg: #1f1f1f;
+  --input-border: #404040;
+  --input-focus-border: #c82333;
+  
+  /* Link Colors */
+  --link-color: #3498db;
+  --link-hover: #5dade2;
+  
+  /* Card Colors */
+  --card-bg: #242526;
+  --card-border: #404040;
+  --card-shadow: rgba(0, 0, 0, 0.4);
+  
+  /* Component Specific */
+  --badge-registered-bg: #e8f5e9;
+  --badge-registered-text: #2e7d32;
+  --badge-added-bg: #e3f2fd;
+  --badge-added-text: #1565c0;
+  --badge-available-bg: #e8f5e9;
+  --badge-available-text: #2e7d32;
+  
+  /* Action Button Colors */
+  --call-btn-bg: #4caf50;
+  --call-btn-hover: #45a049;
+  --request-btn-border: #c82333;
+  --danger-btn-bg: #f44336;
+  --danger-btn-hover: #da190b;
+  
+  /* Table Colors */
+  --table-header-bg: #2a2a2a;
+  --table-row-hover: #333333;
+  --table-border: #404040;
+  
+  /* Navbar Colors */
+  --navbar-bg: linear-gradient(135deg, #d62839 0%, #c82333 100%);
+  --navbar-text: #ffffff;
+  --navbar-shadow: rgba(0, 0, 0, 0.12);
+  
+  /* Success/Warning/Error Colors */
+  --success-bg: #c8e6c9;
+  --success-text: #1b5e20;
+  --warning-bg: #fff3cd;
+  --warning-text: #856404;
+  --error-bg: #f8d7da;
+  --error-text: #721c24;
+}
+
+/* Universal Styles Using Theme Variables */
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #505050;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #606060;
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-color: #505050 var(--bg-secondary);
+  scrollbar-width: thin;
+}
+
+/* Selection Color */
+::selection {
+  background: var(--button-bg);
+  color: white;
+}
