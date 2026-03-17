@@ -13,7 +13,14 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:4000/api/users/login', { emailId, password });
+            console.log('Attempting login with:', { emailId, password });
+            const response = await axios.post('/api/users/login', { emailId, password }, {
+                timeout: 10000,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('Login response:', response.data);
             if (response.data.status === 0) {
                 swal({
                     title: "Error",
@@ -28,8 +35,22 @@ const LoginPage = () => {
                 navigate(`/`);
             }
         } catch (error) {
-            console.error('Login error:', error);
-            const errorMessage = error.response?.data?.message || error.message || 'Login failed. Please try again.';
+            console.error('Login error details:', error);
+            console.error('Error response:', error.response);
+            console.error('Error message:', error.message);
+
+            let errorMessage = 'Login failed. Please try again.';
+
+            if (error.code === 'NETWORK_ERROR' || error.message.includes('Network Error')) {
+                errorMessage = 'Network Error: Cannot connect to server. Please check if the backend is running on port 4000.';
+            } else if (error.response) {
+                // Server responded with error status
+                errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+            } else if (error.request) {
+                // Request was made but no response received
+                errorMessage = 'No response from server. Please check your internet connection.';
+            }
+
             swal('Login Error', errorMessage, 'error');
         }
     };
@@ -41,10 +62,9 @@ const LoginPage = () => {
                 <input type="email" placeholder="EmailId" value={emailId} onChange={(e) => setEmailId(e.target.value)} />
                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 <button onClick={handleLogin}>Login</button>
-                {/* <p>
+                <p>
                     <Link to="/forgot-password">Forgot Password?</Link>
-                </p> */}
-                {/* Optional Forgot Password link */}
+                </p>
                 {/* Register link */}
                 <p>
                     Don’t have an account? <Link to="/register">Register here</Link>

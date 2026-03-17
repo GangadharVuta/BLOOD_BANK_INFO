@@ -4,8 +4,13 @@ import { getFcmToken } from "./firebase";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './styles/theme.css';
 import './styles/responsive.css';
+import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
+import { NotificationProvider } from './context/NotificationContext';
+import SEOHead from './components/common/SEOHead';
+import Analytics from './components/common/Analytics';
+import MainLayout from './components/common/MainLayout';
 
-import Navbar from './components/navBar/Navbar';
 import RegisterPage from './components/register/RegisterPage';
 import HomePage from './components/home/HomePage';
 import DonorProfile from './components/donorProfile/donorProfile';
@@ -13,6 +18,7 @@ import EditProfile from './components/donorProfile/editProfile';
 import AboutUsPage from './components/navBar/AboutUsPage';
 import FAQsPage from './components/navBar/FAQsPage';
 import LoginForm from './components/login/LoginForm';
+import ForgotPassword from './components/login/ForgotPassword';
 import ChangePassword from './components/changePassword/changePassword';
 import DonorList from './components/donorList/donorList';
 import RequestForm from './components/requestForm/requestForm';
@@ -21,6 +27,16 @@ import Dashboard from './components/dashboard/dashboard';
 import NearbyBloodBanks from './components/nearbyBloodBanks/nearbyBloodBanks';
 import AddDonor from './components/donor/AddDonor';
 import ListDonors from './components/donor/ListDonors';
+
+// Admin Components
+import AdminLogin from './components/admin/AdminLogin';
+import AdminDashboard from './components/admin/AdminDashboard';
+import DonorManagement from './components/admin/DonorManagement';
+import RequestManagement from './components/admin/RequestManagement';
+import FeedbackModeration from './components/admin/FeedbackModeration';
+import AdminManagement from './components/admin/AdminManagement';
+import ChatMonitoring from './components/admin/ChatMonitoring';
+import ProtectedAdminRoute from './components/admin/ProtectedAdminRoute';
 
 function App() {
 
@@ -52,7 +68,7 @@ function App() {
 
         // ✅ SEND TOKEN TO BACKEND
         await axios.post(
-          "http://localhost:4000/api/users/save-fcm-token",
+          "/api/users/save-fcm-token",
           { fcmToken: token },
           {
             headers: {
@@ -76,7 +92,7 @@ const saveFcmToken = async (token) => {
 
   try {
     await axios.post(
-      "http://localhost:4000/api/users/save-fcm-token",
+      "/api/users/save-fcm-token",
       { fcmToken: token },
       {
         headers: {
@@ -91,25 +107,86 @@ const saveFcmToken = async (token) => {
 };
 
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutUsPage />} />
-        <Route path="/faqs" element={<FAQsPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/profile" element={<DonorProfile />} />
-        <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/request-blood" element={<RequestBloodPage />} />
-        <Route path="/request-blood-form" element={<RequestForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/nearby-blood-banks" element={<NearbyBloodBanks />} />
-        <Route path="/add-donor" element={<AddDonor />} />
-        <Route path="/list-donors" element={<ListDonors />} />
-      </Routes>
-    </BrowserRouter>
+    <NotificationProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+        <SEOHead />
+        <BrowserRouter>
+          <Analytics />
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutUsPage />} />
+              <Route path="/faqs" element={<FAQsPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/profile" element={<DonorProfile />} />
+              <Route path="/change-password" element={<ChangePassword />} />
+              <Route path="/request-blood" element={<RequestBloodPage />} />
+              <Route path="/request-blood-form" element={<RequestForm />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/nearby-blood-banks" element={<NearbyBloodBanks />} />
+              <Route path="/add-donor" element={<AddDonor />} />
+              <Route path="/list-donors" element={<ListDonors />} />
+
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminDashboard />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/donors"
+                element={
+                  <ProtectedAdminRoute>
+                    <DonorManagement />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/requests"
+                element={
+                  <ProtectedAdminRoute>
+                    <RequestManagement />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/feedback"
+                element={
+                  <ProtectedAdminRoute>
+                    <FeedbackModeration />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/admins"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminManagement />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/chat"
+                element={
+                  <ProtectedAdminRoute>
+                    <ChatMonitoring />
+                  </ProtectedAdminRoute>
+                }
+              />
+            </Routes>
+          </MainLayout>
+        </BrowserRouter>
+        </ThemeProvider>
+        </LanguageProvider>
+      </NotificationProvider>
   );
 }
 

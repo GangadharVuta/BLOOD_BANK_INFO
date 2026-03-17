@@ -1,0 +1,284 @@
+/**
+ * ============================================
+ * CHAT PAGE STYLES
+ * ============================================
+ * Main chat page layout and responsive design
+ */
+
+.chat-page {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 12px;
+    height: 100vh;
+    padding: 12px;
+    background: #f5f5f5;
+    overflow: hidden;
+}
+
+/* ============= CHAT LIST SECTION ============= */
+.chat-list-section {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* ============= CHAT SECTION ============= */
+.chat-section {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* ============= MOBILE HEADER ============= */
+.chat-mobile-header {
+    display: none;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.back-btn {
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============= NO CONVERSATION SELECTED ============= */
+.no-conversation-selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+}
+
+.empty-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.empty-state h2 {
+    margin: 20px 0 10px 0;
+    color: #667eea;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.empty-state p {
+    margin: 0;
+    color: #999;
+    font-size: 16px;
+}
+
+/* ============= RESPONSIVE DESIGN ============= */
+/* Tablet and below */
+@media (max-width: 1024px) {
+    .chat-page {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .chat-list-section,
+    .chat-section {
+        border-radius: 8px;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+    .chat-page {
+        grid-template-columns: 1fr;
+        height: 100vh;
+        padding: 0;
+        gap: 0;
+    }
+
+    .chat-list-section,
+    .chat-section {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        z-index: 10;
+    }
+
+    .chat-list-section.show {
+        display: flex;
+        animation: slideInFromLeft 0.3s ease;
+    }
+
+    .chat-list-section.hide {
+        display: none;
+    }
+
+    .chat-section.show {
+        display: flex;
+        animation: slideInFromRight 0.3s ease;
+    }
+
+    .chat-section.hide {
+        display: none;
+    }
+
+    @keyframes slideInFromLeft {
+        from {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .chat-mobile-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .empty-state {
+        padding: 20px;
+    }
+
+    .empty-icon {
+        font-size: 60px;
+    }
+
+    .empty-state h2 {
+        font-size: 20px;
+    }
+
+    .empty-state p {
+        font-size: 14px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .chat-page {
+        padding: 0;
+        gap: 0;
+    }
+
+    .chat-list-section,
+    .chat-section {
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .back-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .empty-icon {
+        font-size: 50px;
+    }
+
+    .empty-state h2 {
+        font-size: 18px;
+        margin: 15px 0 8px 0;
+    }
+
+    .empty-state p {
+        font-size: 13px;
+    }
+}
+
+/* Enhanced scrollbar for modern browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
+}
+
+/* ============= DARK MODE SUPPORT ============= */
+@media (prefers-color-scheme: dark) {
+    .chat-page {
+        background: #0f0f0f;
+    }
+
+    .chat-list-section,
+    .chat-section {
+        background: #1e1e1e;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .no-conversation-selected {
+        background: linear-gradient(135deg, #1e1e1e 0%, #0f0f0f 100%);
+    }
+
+    .empty-state h2 {
+        color: #667eea;
+    }
+
+    .empty-state p {
+        color: #666;
+    }
+}
+
+/* Print styles */
+@media print {
+    .chat-page {
+        display: none;
+    }
+}

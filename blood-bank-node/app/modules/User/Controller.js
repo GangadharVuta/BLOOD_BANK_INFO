@@ -7,6 +7,7 @@ const userProjection = require('../User/Projection')
 const Globals = require("../../../configs/Globals");
 const RequestBody = require("../../services/RequestBody");
 const Authentication = require('../Authentication/Schema').Authtokens;
+const { OTP } = require('../OTP/Schema');
 const CommonService = require("../../services/Common");
 const admin = require("../../../configs/firebase");
 
@@ -347,6 +348,167 @@ async sendTestNotification() {
   }
 }
 
+/********************************************************
+ Purpose: Send OTP for password reset
+ Parameter:
+ {
+    "emailId": "user@example.com"
+ }
+ Return: JSON String
+ ********************************************************/
+async forgotPasswordSendOtp() {
+    try {
+        const { emailId } = this.req.body;
+
+        if (!emailId) {
+            return this.res.send({
+                status: 0,
+                message: "Email is required"
+            });
+        }
+
+        // Check if user exists
+        const user = await Users.findOne({
+            emailId: emailId.toLowerCase(),
+            isDeleted: false
+        });
+
+        if (_.isEmpty(user)) {
+            return this.res.send({
+                status: 0,
+                message: "User with this email not found"
+            });
+        }
+
+        // Delete any existing unverified password reset OTPs for this email
+        await OTP.deleteMany({
+            emailId: emailId.toLowerCase(),
+            otpType: 'password_reset',
+            verified: false
+        });
+
+        // Generate random 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Save OTP to database
+        const otpDoc = await OTP.create({
+            emailId: emailId.toLowerCase(),
+            otp,
+            otpType: 'password_reset',
+            verified: false,
+            attempts: 0,
+            expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+        });
+
+        // TODO: In production, send email with OTP using service like SendGrid, Nodemailer, etc.
+        // For now, log OTP in console (development only)
+        console.log(`[PASSWORD RESET OTP] Email: ${emailId}, OTP: ${otp}`);
+
+        return this.res.send({
+            status: 1,
+            message: "OTP sent to your email successfully",
+            expiresIn: 600 // 10 minutes in seconds
+        });
+
+    } catch (error) {
+        console.log("Error in forgotPasswordSendOtp:", error);
+        return this.res.send({
+            status: 0,
+            message: error.message || "An error occurred while sending OTP"
+        });
+    }
+}
+
+/********************************************************
+ Purpose: Reset password with OTP verification
+ Parameter:
+ {
+    "emailId": "user@example.com",
+    "otp": "123456",
+    "newPassword": "newPassword123"
+ }
+ Return: JSON String
+ ********************************************************/
+async resetPassword() {
+    try {
+        const { emailId, otp, newPassword } = this.req.body;
+
+        if (!emailId || !otp || !newPassword) {
+            return this.res.send({
+                status: 0,
+                message: "Email, OTP, and new password are required"
+            });
+        }
+
+        if (newPassword.length < 6) {
+            return this.res.send({
+                status: 0,
+                message: "Password must be at least 6 characters long"
+            });
+        }
+
+        // Find the OTP record
+        const otpRecord = await OTP.findOne({
+            emailId: emailId.toLowerCase(),
+            otp,
+            otpType: 'password_reset',
+            verified: false,
+            expiresAt: { $gt: new Date() }
+        });
+
+        if (_.isEmpty(otpRecord)) {
+            return this.res.send({
+                status: 0,
+                message: "Invalid or expired OTP"
+            });
+        }
+
+        if (otpRecord.attempts >= 5) {
+            await OTP.deleteOne({ _id: otpRecord._id });
+            return this.res.send({
+                status: 0,
+                message: "Maximum OTP attempts exceeded. Please request a new OTP."
+            });
+        }
+
+        // Find user and update password
+        const user = await Users.findOne({
+            emailId: emailId.toLowerCase(),
+            isDeleted: false
+        });
+
+        if (_.isEmpty(user)) {
+            return this.res.send({
+                status: 0,
+                message: "User not found"
+            });
+        }
+
+        // Encrypt new password
+        const encryptedPassword = await new CommonService().ecryptPassword({
+            password: newPassword
+        });
+
+        // Update user password
+        await Users.findByIdAndUpdate(user._id, { password: encryptedPassword });
+
+        // Mark OTP as verified
+        otpRecord.verified = true;
+        await otpRecord.save();
+
+        return this.res.send({
+            status: 1,
+            message: "Password reset successfully. Please login with your new password."
+        });
+
+    } catch (error) {
+        console.log("Error in resetPassword:", error);
+        return this.res.send({
+            status: 0,
+            message: error.message || "An error occurred while resetting password"
+        });
+    }
+}
 
 }
 module.exports = UsersController;

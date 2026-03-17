@@ -32,7 +32,7 @@ const DonorList = () => {
                 bloodGroup,
                 pincode
             };
-            const response = await axios.post('http://localhost:4000/api/requests/getDonorsList', req, {
+            const response = await axios.post('/api/requests/getDonorsList', req, {
                 headers: {
                     Authorization: token,
                     'Content-Type': 'application/json',

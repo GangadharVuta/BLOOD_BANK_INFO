@@ -2,28 +2,33 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import Logo from '../../assets/logo.png';
+import FeedbackCarousel from './FeedbackCarousel';
 import 'font-awesome/css/font-awesome.min.css';
 import swal from 'sweetalert';
 import axios from 'axios';
+import { motion } from 'framer-motion';
+import { useTranslation } from '../../context/LanguageContext';
 
 
 function HomePage() {
+    const { t } = useTranslation();
+
     const advantages = [
         {
-            title: "Quick Donor Matching",
-            description: "Easily find matching blood donors based on your location and blood group."
+            title: t('quickDonorMatching'),
+            description: t('quickDonorMatchingDesc')
         },
         {
-            title: "Real-time Listings",
-            description: "Access live donor data to ensure fast communication and timely donations."
+            title: t('realTimeListings'),
+            description: t('realTimeListingsDesc')
         },
         {
-            title: "Secure & Verified",
-            description: "User details are verified and securely stored for your protection."
+            title: t('secureVerified'),
+            description: t('secureVerifiedDesc')
         },
         {
-            title: "Community Support",
-            description: "Join a helpful community ready to respond in emergencies."
+            title: t('communitySupport'),
+            description: t('communitySupportDesc')
         }
     ];
     const navigate = useNavigate();
@@ -36,14 +41,14 @@ function HomePage() {
                 navigate('/');
                 return;
             }
-            
+
             await axios.get('http://localhost:4000/api/users/logout', {
                 headers: {
                     'Authorization': `${token}`,
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             localStorage.removeItem('token');
             swal("Logout successfully");
             navigate('/');
@@ -55,20 +60,123 @@ function HomePage() {
             navigate('/');
         }
     };
-    
+
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.6,
+                staggerChildren: 0.2
+            }
+        }
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    const titleVariants = {
+        hidden: { opacity: 0, y: -30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+                ease: "easeOut"
+            }
+        }
+    };
+
     return (
-        <div className="home-container">
-            <div className="advantages-section">
-                <h2>Why Use BloodConnect?</h2>
-                <div className="advantages-cards">
+        <motion.div
+            className="home-container"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            role="main"
+            aria-labelledby="main-heading"
+        >
+            <motion.div
+                className="advantages-section"
+                variants={containerVariants}
+                aria-labelledby="advantages-heading"
+            >
+                <motion.h2
+                    id="advantages-heading"
+                    variants={titleVariants}
+                    tabIndex="-1"
+                >
+                    {t('whyUseBloodConnect')}
+                </motion.h2>
+                <motion.div
+                    className="advantages-cards"
+                    variants={containerVariants}
+                    role="list"
+                    aria-label="Blood donation advantages"
+                >
                     {advantages.map((adv, index) => (
-                        <div key={index} className="advantage-card">
-                            <h3>{adv.title}</h3>
-                            <p>{adv.description}</p>
-                        </div>
+                        <motion.div
+                            key={index}
+                            className="advantage-card"
+                            variants={cardVariants}
+                            whileHover={{
+                                scale: 1.05,
+                                boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.15)"
+                            }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                            role="listitem"
+                            tabIndex="0"
+                            aria-describedby={`advantage-${index}-desc`}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    // Could add focus management or other interactions here
+                                }
+                            }}
+                        >
+                            <motion.h3
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.3 + index * 0.1 }}
+                                id={`advantage-${index}-title`}
+                            >
+                                {adv.title}
+                            </motion.h3>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.5 + index * 0.1 }}
+                                id={`advantage-${index}-desc`}
+                            >
+                                {adv.description}
+                            </motion.p>
+                        </motion.div>
                     ))}
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
+
+            {/* Feedback Carousel Section */}
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                role="region"
+                aria-labelledby="feedback-heading"
+            >
+                <h2 id="feedback-heading" className="sr-only">User Feedback</h2>
+                <FeedbackCarousel />
+            </motion.div>
 
             {/* <div className="card-section">
                 {cards.map((card, index) => (
@@ -84,7 +192,7 @@ function HomePage() {
                     Login
                 </button>
             </div> */}
-        </div>
+        </motion.div>
     );
 }
 

@@ -9,26 +9,47 @@ const Sidebar = () => {
     const [isDonorExpanded, setIsDonorExpanded] = useState(false);
 
     const handleLogout = async () => {
-        const token = localStorage.getItem('token'); // Remove token from localStorage
-        const response = await axios.get('http://localhost:4000/api/users/logout', {
-            headers: {
-                'Authorization': `${token}`, // Send the token in the Authorization header
-                'Content-Type': 'application/json',  // Specify content type (optional)
+        try {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                swal("Logged out successfully");
+                navigate('/');
+                return;
             }
-        },);
-        if (response.data.status === 0) {
-            swal({
-                title: "Error",
-                text: typeof response.data.message === 'string' ? response.data.message : JSON.stringify(response.data.message),
-                icon: "error",
-                button: "Okay"
-            });
-        } else {
-            localStorage.removeItem('token'); // Remove token from localStorage
-            swal("Logout successfully")
-            navigate(`/`);
-        }
 
+            const response = await axios.get('http://localhost:4000/api/users/logout', {
+                headers: {
+                    'Authorization': `${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            // Clear localStorage regardless of response
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            
+            if (response.data.status === 1) {
+                swal("Logout successfully");
+            } else {
+                swal({
+                    title: "Error",
+                    text: typeof response.data.message === 'string' ? response.data.message : JSON.stringify(response.data.message),
+                    icon: "error",
+                    button: "Okay"
+                });
+            }
+            navigate('/');
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Clear tokenfrom localStorage anyway
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            swal("Logged out successfully");
+            navigate('/');
+        }
     };
     const handleChangePassword = async () => {
         navigate(`/change-password`);

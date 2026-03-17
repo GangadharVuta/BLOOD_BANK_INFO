@@ -73,6 +73,10 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 // ✅ Nominatim API - Geocode location string to lat/lon
 const geocodeLocation = async (locationString) => {
   try {
+    const controller = new AbortController();
+    // Set timeout to 15 seconds for geocoding
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     const response = await fetch(
       `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
         locationString
@@ -81,8 +85,11 @@ const geocodeLocation = async (locationString) => {
         headers: {
           "User-Agent": "Blood-Bank-Finder/1.0 (React App)",
         },
+        signal: controller.signal,
       }
     );
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
@@ -98,75 +105,158 @@ const geocodeLocation = async (locationString) => {
       address: result.display_name,
     };
   } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error("Geocoding request timeout. Please check your internet connection.");
+    }
     console.error("❌ Geocoding error:", error.message);
     throw error;
   }
 };
 
 // ✅ Overpass API - Fetch blood banks and hospitals within 5km
-const fetchNearbyBloodBanks = async (lat, lon, radiusKm = 5) => {
+const fetchNearbyBloodBanks = async (lat, lon, radiusKm = 5, retries = 3) => {
   const radiusMeters = radiusKm * 1000;
 
+  // Simplified query - faster response, only hospitals
   const overpassQuery = `
-    [out:json];
-    (
-      node["amenity"="hospital"](around:${radiusMeters},${lat},${lon});
-      node["healthcare"="blood_bank"](around:${radiusMeters},${lat},${lon});
-      way["amenity"="hospital"](around:${radiusMeters},${lat},${lon});
-      way["healthcare"="blood_bank"](around:${radiusMeters},${lat},${lon});
-    );
-    out center;
+    [out:json][timeout:20];
+    node["amenity"="hospital"](around:${radiusMeters},${lat},${lon});
+    out geom;
   `;
 
-  try {
-    const response = await fetch(
-      "https://overpass-api.de/api/interpreter",
-      {
-        method: "POST",
-        body: overpassQuery,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const controller = new AbortController();
+      // Set timeout to 30 seconds
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      console.log(`📡 Attempt ${attempt}/${retries}: Fetching from Overpass API...`);
+
+      const response = await fetch(
+        "https://overpass-api.de/api/interpreter",
+        {
+          method: "POST",
+          body: overpassQuery,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        console.warn(`⚠️ HTTP ${response.status} on attempt ${attempt}`);
+        if (response.status === 504 && attempt < retries) {
+          console.warn(`🔄 504 Gateway Timeout. Retrying...`);
+          await new Promise(resolve => setTimeout(resolve, 3000 * attempt));
+          continue;
+        }
+        throw new Error(`HTTP ${response.status}`);
       }
-    );
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.elements.length === 0) {
-      return [];
+      if (!data.elements || data.elements.length === 0) {
+        console.warn("⚠️ No data from Overpass API");
+        return [];
+      }
+
+      console.log(`✅ Got ${data.elements.length} hospitals from Overpass`);
+
+      // Parse and enrich data
+      const bloodBanks = data.elements.map((element) => {
+        const elat = element.lat;
+        const elon = element.lon;
+        const distance = calculateDistance(lat, lon, elat, elon);
+        const tags = element.tags || {};
+
+        return {
+          id: element.id,
+          name: tags.name || "Hospital/Medical Facility",
+          lat: elat,
+          lon: elon,
+          distance,
+          phone: tags.phone || null,
+          address: formatAddress(tags),
+          addressStreet: tags["addr:street"] || null,
+          addressCity: tags["addr:city"] || null,
+          addressPostcode: tags["addr:postcode"] || null,
+          website: tags.website || null,
+          type: "Hospital",
+          opening_hours: tags.opening_hours || null,
+        };
+      });
+
+      // Sort by distance
+      return bloodBanks.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.error(`⏱️ Attempt ${attempt}: Request timeout (>30 seconds)`);
+      } else {
+        console.error(`❌ Attempt ${attempt} failed:`, error.message);
+      }
+
+      if (attempt < retries) {
+        const waitTime = 3000 * attempt;
+        console.log(`⏳ Waiting ${waitTime}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
     }
-
-    // Parse and enrich data
-    const bloodBanks = data.elements.map((element) => {
-      const elat = element.center ? element.center.lat : element.lat;
-      const elon = element.center ? element.center.lon : element.lon;
-      const distance = calculateDistance(lat, lon, elat, elon);
-      const tags = element.tags || {};
-
-      return {
-        id: element.id,
-        name: tags.name || tags["healthcare:speciality"] || "Unnamed Medical Facility",
-        lat: elat,
-        lon: elon,
-        distance,
-        phone: tags.phone || null,
-        address: formatAddress(tags),
-        addressStreet: tags["addr:street"] || null,
-        addressCity: tags["addr:city"] || null,
-        addressPostcode: tags["addr:postcode"] || null,
-        website: tags.website || null,
-        type: tags.healthcare === "blood_bank" ? "Blood Bank" : "Hospital",
-        opening_hours: tags.opening_hours || null,
-      };
-    });
-
-    // Sort by distance
-    return bloodBanks.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-  } catch (error) {
-    console.error("❌ Overpass API error:", error.message);
-    throw error;
   }
+
+  // Fallback: Return mock data if all attempts fail
+  console.warn("⚠️ All attempts failed. Showing sample blood banks...");
+  return getMockBloodBanks(lat, lon);
+};
+
+// 📍 Mock blood banks data (for testing/fallback)
+const getMockBloodBanks = (lat, lon) => {
+  const mockData = [
+    {
+      id: 'mock_1',
+      name: 'Apollo Hospitals Blood Bank',
+      lat: lat + 0.01,
+      lon: lon + 0.01,
+      distance: calculateDistance(lat, lon, lat + 0.01, lon + 0.01),
+      phone: '+91-891-2345678',
+      address: 'Apollo Hospitals, Main Road, Downtown',
+      city: 'Current City',
+      type: 'Blood Bank',
+      website: 'https://www.apollohospitals.com',
+      opening_hours: 'Mo-Su 09:00-21:00',
+    },
+    {
+      id: 'mock_2',
+      name: 'Central Medical Blood Donation Center',
+      lat: lat - 0.015,
+      lon: lon + 0.005,
+      distance: calculateDistance(lat, lon, lat - 0.015, lon + 0.005),
+      phone: '+91-891-9876543',
+      address: 'Central Medical Complex, Hospital Street',
+      city: 'Current City',
+      type: 'Blood Bank',
+      website: '',
+      opening_hours: 'Mo-Fr 08:00-18:00; Sa 08:00-12:00',
+    },
+    {
+      id: 'mock_3',
+      name: 'Red Cross Blood Bank',
+      lat: lat + 0.02,
+      lon: lon - 0.01,
+      distance: calculateDistance(lat, lon, lat + 0.02, lon - 0.01),
+      phone: '+91-891-4567890',
+      address: 'Red Cross Headquarters, Charity Road',
+      city: 'Current City',
+      type: 'Blood Bank',
+      website: 'https://www.redcross.org',
+      opening_hours: 'Mo-Su 10:00-20:00',
+    },
+  ];
+
+  return mockData.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
 };
 
 // ✅ Get availability status randomly (demo feature)
@@ -227,13 +317,27 @@ const NearbyBloodBanks = () => {
       const banks = await fetchNearbyBloodBanks(location.lat, location.lon, radius);
 
       if (banks.length === 0) {
-        setError(`No blood banks or hospitals found within ${radius}km radius.`);
+        setError(`No blood banks found within ${radius}km radius. Try a larger radius or different area.`);
+      } else {
+        // Show info if using mock data
+        const mockBanks = banks.filter(b => String(b.id).includes('mock_'));
+        if (mockBanks.length > 0) {
+          setError(`⚠️ Showing ${mockBanks.length} sample locations (Live data unavailable. Please try again in a moment.)`);
+        }
       }
 
       setBloodBanks(banks);
     } catch (err) {
-      setError(err.message || "An error occurred. Please try again.");
-      console.error(err);
+      const errorMsg = err.message || "An error occurred. Please try again.";
+      console.error("Search error:", err);
+      
+      if (errorMsg.includes("not found")) {
+        setError(
+          `❌ Location "${locationInput}" not found. Please check the spelling and try again.`
+        );
+      } else {
+        setError(errorMsg);
+      }
     } finally {
       setLoading(false);
     }

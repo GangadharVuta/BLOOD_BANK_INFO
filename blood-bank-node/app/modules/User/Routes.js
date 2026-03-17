@@ -38,6 +38,17 @@ module.exports = (app, express) => {
         return userObj.logout();
 
     });
+    
+    router.post('/users/forgot-password-send-otp', (req, res, next) => {
+        const userObj = (new UsersController()).boot(req, res);
+        return userObj.forgotPasswordSendOtp();
+    });
+
+    router.post('/users/reset-password', (req, res, next) => {
+        const userObj = (new UsersController()).boot(req, res);
+        return userObj.resetPassword();
+    });
+    
     router.post(
   "/users/save-fcm-token",
   Globals.isAuthorised,

@@ -47,7 +47,7 @@ const ListDonors = () => {
       }
 
       const response = await axios.get(
-        `http://localhost:4000/api/donors?addedBy=${userId}`,
+        `/api/donors?addedBy=${userId}`,
         {
           headers: {
             Authorization: authToken,

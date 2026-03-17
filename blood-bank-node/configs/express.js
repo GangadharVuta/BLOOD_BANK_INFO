@@ -26,15 +26,16 @@ module.exports = function () {
   app.use((req, res, next) => {
     const origin = req.headers.origin;
     
-    // Allow if in whitelist (or no origin header for Postman/curl)
+    // Allow if in whitelist or no origin header (for Postman/curl)
     if (!origin || corsWhitelist.includes(origin)) {
       res.header('Access-Control-Allow-Origin', origin || '*');
       res.header('Access-Control-Allow-Credentials', 'true');
       res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
       res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
+      res.header('Access-Control-Max-Age', '3600');
     }
     
-    // Handle preflight
+    // Handle preflight requests
     if (req.method === 'OPTIONS') {
       return res.sendStatus(200);
     }
@@ -49,6 +50,9 @@ module.exports = function () {
   require('../app/modules/OTP/Routes.js')(app, express);
   require('../app/modules/Request/Routes.js')(app, express);
   require('../app/modules/Donor/Routes.js')(app, express);
+  require('../app/modules/BloodBank/Routes.js')(app, express);
+  require('../app/modules/Chat/Routes.js')(app, express);
+  require('../app/modules/Admin/Routes.js')(app, express);
 
   // ======= CENTRALIZED ERROR HANDLER MIDDLEWARE (MUST BE LAST)
   app.use((err, req, res, next) => {

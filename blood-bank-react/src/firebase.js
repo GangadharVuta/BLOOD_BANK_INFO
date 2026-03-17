@@ -44,11 +44,32 @@ const auth = getAuth(app);
 auth.languageCode = "en";
 
 // ================= FCM ==================
-let messaging;
-try {
-  messaging = getMessaging(app);
-} catch (err) {
-  console.warn("FCM not supported in this browser");
+let messaging = null;
+
+/**
+ * Check if browser supports FCM
+ */
+const isFcmSupported = () => {
+  return (
+    "serviceWorker" in navigator &&
+    "PushManager" in window &&
+    "Notification" in window &&
+    typeof window.indexedDB !== "undefined"
+  );
+};
+
+// Initialize messaging only if supported
+if (isFcmSupported()) {
+  try {
+    messaging = getMessaging(app);
+    console.log("✅ Firebase Messaging initialized");
+  } catch (err) {
+    console.warn("⚠️ FCM not supported in this browser:", err.message);
+    messaging = null;
+  }
+} else {
+  console.warn("⚠️ Browser doesn't support FCM. Missing APIs: ServiceWorker, PushManager, Notification, or IndexedDB");
+  messaging = null;
 }
 
 // Get FCM token

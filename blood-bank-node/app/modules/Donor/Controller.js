@@ -14,7 +14,7 @@ class DonorsController extends Controller {
 
     /**
      * Purpose: Create a new donor
-     * Parameters: name, bloodGroup, phone, pincode, lastDonationDate, addedBy
+     * Parameters: name, bloodGroup, phone, city, village, lastDonationDate, addedBy, availability
      * Return: JSON String
      */
     async addDonor() {
@@ -33,8 +33,11 @@ class DonorsController extends Controller {
             if (!requestObj.phone?.trim()) {
                 return this.sendResponse(0, 'Phone is required', {}, 400);
             }
-            if (!requestObj.pincode?.trim()) {
-                return this.sendResponse(0, 'Pincode is required', {}, 400);
+            if (!requestObj.city?.trim()) {
+                return this.sendResponse(0, 'City is required', {}, 400);
+            }
+            if (!requestObj.village?.trim()) {
+                return this.sendResponse(0, 'Village is required', {}, 400);
             }
             if (!requestObj.lastDonationDate) {
                 return this.sendResponse(0, 'Last donation date is required', {}, 400);
@@ -49,11 +52,6 @@ class DonorsController extends Controller {
                 return this.sendResponse(0, 'Phone number must be at least 10 digits', {}, 400);
             }
 
-            // Validate pincode is 6 digits
-            if (!/^\d{6}$/.test(requestObj.pincode)) {
-                return this.sendResponse(0, 'Pincode must be exactly 6 digits', {}, 400);
-            }
-
             // Verify addedBy user exists
             let userExists = await Users.findById(requestObj.addedBy);
             if (!userExists) {
@@ -66,8 +64,12 @@ class DonorsController extends Controller {
                 name: requestObj.name.trim(),
                 bloodGroup: requestObj.bloodGroup,
                 phone: requestObj.phone.trim(),
-                pincode: requestObj.pincode.trim(),
+                city: requestObj.city.trim(),
+                village: requestObj.village.trim(),
+                pincode: requestObj.pincode?.trim() || '', // Optional
                 lastDonationDate: new Date(requestObj.lastDonationDate),
+                availability: requestObj.availability || 'Available',
+                donorType: requestObj.donorType || 'manual',
                 addedBy: new ObjectId(requestObj.addedBy),
                 isDeleted: false
             };

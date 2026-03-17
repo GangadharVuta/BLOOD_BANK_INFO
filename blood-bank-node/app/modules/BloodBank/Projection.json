@@ -1,0 +1,27 @@
+{
+  "defaultProjection": {
+    "_id": 1,
+    "overpassId": 1,
+    "name": 1,
+    "type": 1,
+    "latitude": 1,
+    "longitude": 1,
+    "address": 1,
+    "city": 1,
+    "phone": 1,
+    "website": 1,
+    "openingHours": 1,
+    "availability": 1,
+    "lastUpdated": 1
+  },
+  "listProjection": {
+    "name": 1,
+    "type": 1,
+    "city": 1,
+    "phone": 1,
+    "address": 1,
+    "latitude": 1,
+    "longitude": 1,
+    "availability": 1
+  }
+}

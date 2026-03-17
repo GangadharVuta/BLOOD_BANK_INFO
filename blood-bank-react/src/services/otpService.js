@@ -6,7 +6,7 @@ import axios from 'axios';
 import { auth, RecaptchaVerifier } from '../firebase';
 import { signInWithPhoneNumber } from 'firebase/auth';
 
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = '/api';
 
 class OTPService {
   /**

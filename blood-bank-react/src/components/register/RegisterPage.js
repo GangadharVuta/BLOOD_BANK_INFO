@@ -15,7 +15,7 @@ import swal from 'sweetalert';
 import Logo from '../../assets/logo.png';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = '/api';
 
 function RegisterPage() {
   // Step 1: Phone Authentication

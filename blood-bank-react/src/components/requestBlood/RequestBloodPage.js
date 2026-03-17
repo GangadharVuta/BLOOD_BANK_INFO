@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import './RequestBloodPage.css';
+import DonorCard from './DonorCard';
 import Navbar from '../navBar/Navbar';
 import Sidebar from '../sidebar/sidebar';
 
@@ -28,11 +29,7 @@ const RequestBloodPage = () => {
   const [locations, setLocations] = useState([]);
 
   // Fetch merged donor list
-  useEffect(() => {
-    fetchMergedDonors();
-  }, []);
-
-  const fetchMergedDonors = async () => {
+  const fetchMergedDonors = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -44,7 +41,7 @@ const RequestBloodPage = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:4000/api/donors/merged/all', {
+      const response = await axios.get('/api/donors/merged/all', {
         headers: { Authorization: token }
       });
 
@@ -56,8 +53,12 @@ const RequestBloodPage = () => {
         const uniqueBloodGroups = [...new Set(donorsList.map(d => d.bloodGroup))].sort();
         setBloodGroups(uniqueBloodGroups);
 
-        // Extract unique locations (pincodes)
-        const uniqueLocations = [...new Set(donorsList.map(d => d.pincode))].sort();
+        // Extract unique locations (city + village)
+        const uniqueLocations = [...new Set(
+          donorsList
+            .map(d => d.city || d.village || d.pincode)
+            .filter(Boolean)
+        )].sort();
         setLocations(uniqueLocations);
 
         applyFilters(donorsList, searchTerm, selectedBloodGroup, selectedLocation);
@@ -74,13 +75,17 @@ const RequestBloodPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchMergedDonors();
+  }, [fetchMergedDonors]);
 
   // Filter and search logic
   const applyFilters = (donorList, search, bloodGroup, location) => {
     let filtered = donorList;
 
-    // Search by name
+    // Search by name (privacy: only on internal list)
     if (search.trim()) {
       filtered = filtered.filter(donor =>
         donor.name.toLowerCase().includes(search.toLowerCase())
@@ -92,9 +97,11 @@ const RequestBloodPage = () => {
       filtered = filtered.filter(donor => donor.bloodGroup === bloodGroup);
     }
 
-    // Filter by location
+    // Filter by location (city or village)
     if (location !== 'all') {
-      filtered = filtered.filter(donor => donor.pincode === location);
+      filtered = filtered.filter(donor =>
+        (donor.city === location || donor.village === location || donor.pincode === location)
+      );
     }
 
     setFilteredDonors(filtered);
@@ -144,11 +151,6 @@ const RequestBloodPage = () => {
         selectedBloodGroup: selectedBloodGroup !== 'all' ? selectedBloodGroup : 'any'
       }
     });
-  };
-
-  // Call button
-  const handleCall = (phone) => {
-    window.open(`tel:${phone}`);
   };
 
   return (
@@ -237,63 +239,14 @@ const RequestBloodPage = () => {
           {!loading && !error && filteredDonors.length > 0 && (
             <div className="donors-grid">
               {filteredDonors.map(donor => (
-                <div key={donor._id} className={`donor-card ${selectedDonors.includes(donor._id) ? 'selected' : ''}`}>
-                  {/* Selection Checkbox */}
-                  <input
-                    type="checkbox"
-                    checked={selectedDonors.includes(donor._id)}
-                    onChange={() => toggleDonorSelection(donor._id)}
-                    className="donor-checkbox"
-                  />
-
-                  {/* Donor Type Badge */}
-                  <div className={`donor-badge ${donor.donorType}`}>
-                    {donor.donorType === 'registered' ? '🟢 Registered' : '🔵 Added by Donor'}
-                  </div>
-
-                  {/* Donor Info */}
-                  <div className="donor-info">
-                    <h3 className="donor-name">{donor.name}</h3>
-
-                    <div className="donor-detail">
-                      <span className="label">Blood Group:</span>
-                      <span className="blood-group-badge">{donor.bloodGroup}</span>
-                    </div>
-
-                    <div className="donor-detail">
-                      <span className="label">📍 Location:</span>
-                      <span className="value">{donor.pincode}</span>
-                    </div>
-
-                    <div className="donor-detail">
-                      <span className="label">📞 Contact:</span>
-                      <span className="value">{donor.phone}</span>
-                    </div>
-
-                    <div className="donor-detail">
-                      <span className="label">Availability:</span>
-                      <span className="availability-badge">{donor.availability}</span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="donor-actions">
-                    <button
-                      className="action-btn call-btn"
-                      onClick={() => handleCall(donor.phone)}
-                      title="Call donor"
-                    >
-                      📞 Call
-                    </button>
-                    <button
-                      className={`action-btn request-btn ${selectedDonors.includes(donor._id) ? 'active' : ''}`}
-                      onClick={() => toggleDonorSelection(donor._id)}
-                      title={selectedDonors.includes(donor._id) ? 'Deselect donor' : 'Select donor'}
-                    >
-                      {selectedDonors.includes(donor._id) ? '✓ Selected' : '❤️ Request'}
-                    </button>
-                  </div>
-                </div>
+                <DonorCard
+                  key={donor._id}
+                  donor={donor}
+                  isSelected={selectedDonors.includes(donor._id)}
+                  onSelect={toggleDonorSelection}
+                  currentUserId={localStorage.getItem('userId') || localStorage.getItem('id')}
+                  requestId={null}
+                />
               ))}
             </div>
           )}

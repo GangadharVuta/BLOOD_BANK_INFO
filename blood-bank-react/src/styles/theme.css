@@ -1,40 +1,88 @@
-/* Theme Variables for Dark Mode */
+/* Theme Variables for Dark and Light Modes */
 
-:root {
-  /* Dark-first palette matching Request Blood page design */
-  
+/* Light Theme Variables */
+[data-theme="light"] {
+  /* Background Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+
+  /* Text Colors */
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-tertiary: #adb5bd;
+
+  /* Border & Shadow */
+  --border-color: #dee2e6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* Button Colors */
+  --button-bg: #dc3545; /* Red for light theme */
+  --button-hover: #c82333; /* Darker red on hover */
+
+  /* Input Colors */
+  --input-bg: #ffffff;
+  --input-border: #ced4da;
+  --input-focus-border: #dc3545;
+
+  /* Link Colors */
+  --link-color: #007bff;
+  --link-hover: #0056b3;
+
+  /* Card Colors */
+  --card-bg: #ffffff;
+  --card-border: #dee2e6;
+  --card-shadow: rgba(0, 0, 0, 0.125);
+
+  /* Component Specific */
+  --badge-registered-bg: #d4edda;
+  --badge-registered-text: #155724;
+  --badge-added-bg: #d1ecf1;
+  --badge-added-text: #0c5460;
+  --badge-available-bg: #d4edda;
+  --badge-available-text: #155724;
+
+  /* Action Button Colors */
+  --call-btn-bg: #28a745;
+  --call-btn-hover: #218838;
+  --request-btn-border: #dc3545;
+  --danger-btn-bg: #dc3545;
+}
+
+/* Dark Theme Variables (existing) */
+[data-theme="dark"] {
   /* Background Colors */
   --bg-primary: #121212;
   --bg-secondary: #1f1f1f;
   --bg-tertiary: #2a2a2a;
-  
+
   /* Text Colors */
   --text-primary: #e0e0e0;
   --text-secondary: #b0b0b0;
   --text-tertiary: #808080;
-  
+
   /* Border & Shadow */
   --border-color: #404040;
   --shadow-color: rgba(0, 0, 0, 0.5);
-  
+
   /* Button Colors */
   --button-bg: #c82333; /* Deep red - primary CTA */
   --button-hover: #a71e2a; /* Darker red on hover */
-  
+
   /* Input Colors */
   --input-bg: #1f1f1f;
   --input-border: #404040;
   --input-focus-border: #c82333;
-  
+
   /* Link Colors */
   --link-color: #3498db;
   --link-hover: #5dade2;
-  
+
   /* Card Colors */
   --card-bg: #242526;
   --card-border: #404040;
   --card-shadow: rgba(0, 0, 0, 0.4);
-  
+
   /* Component Specific */
   --badge-registered-bg: #e8f5e9;
   --badge-registered-text: #2e7d32;
@@ -42,7 +90,7 @@
   --badge-added-text: #1565c0;
   --badge-available-bg: #e8f5e9;
   --badge-available-text: #2e7d32;
-  
+
   /* Action Button Colors */
   --call-btn-bg: #4caf50;
   --call-btn-hover: #45a049;
