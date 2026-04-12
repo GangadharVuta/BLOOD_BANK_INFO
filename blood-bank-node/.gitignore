@@ -12,7 +12,10 @@ yarn-error.log*
 /configs/configs.js
 
 /node_modules
-# .env
+.env
+.env.local
+.env.*.local
+!.env.example
 
 # IDEs and editors
 /.idea

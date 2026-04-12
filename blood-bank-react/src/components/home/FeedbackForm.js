@@ -22,6 +22,7 @@ const FeedbackForm = ({ onSubmitSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
   const bloodGroups = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'];
   const roles = ['Donor', 'Recipient'];
 
@@ -88,7 +89,7 @@ const FeedbackForm = ({ onSubmitSuccess }) => {
       }
 
       const response = await axios.post(
-        '/api/feedback',
+        `${API_BASE_URL}/api/feedback`,
         formData,
         {
           headers: { Authorization: token }

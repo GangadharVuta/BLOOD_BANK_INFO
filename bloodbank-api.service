@@ -1,0 +1,45 @@
+[Unit]
+Description=Blood Bank API Service
+After=network.target mongodb.service
+Wants=mongodb.service
+
+[Service]
+Type=simple
+User=bloodbank
+WorkingDirectory=/var/www/bloodbank-api/blood-bank-node
+ExecStart=/usr/bin/node server.js
+
+# Environment variables
+EnvironmentFile=/var/www/bloodbank-api/.env
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitInterval=200
+StartLimitBurst=5
+
+# Resource limits
+MemoryMax=2G
+CPUQuota=200%
+
+# Process management
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=bloodbank-api
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/www/bloodbank-api/logs /var/www/bloodbank-api/uploads
+
+# Health check (optional, requires service file to support it)
+ExecHealthCheck=/usr/local/bin/bloodbank-health-check.sh
+
+# Timeout settings
+TimeoutStartSec=30
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

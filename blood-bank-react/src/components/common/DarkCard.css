@@ -27,7 +27,7 @@
 
 /* Selected State */
 .dark-card--selected {
-  border-color: var(--button-bg, #c82333);
+  border-color: var(--button-bg, #667eea);
   background: var(--bg-secondary, #1f1f1f);
 }
 
@@ -39,7 +39,7 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: var(--button-bg, #c82333);
+  accent-color: var(--button-bg, #667eea);
   z-index: 10;
 }
 
@@ -146,7 +146,7 @@
 
 /* ========== Highlighted Value (Blood Group, Distance, etc.) ========== */
 .dark-card__highlighted {
-  background: linear-gradient(135deg, var(--button-bg, #c82333) 0%, #a71e2a 100%);
+  background: linear-gradient(135deg, var(--button-bg, #667eea) 0%, #764ba2 100%);
   color: white;
   padding: 10px 14px;
   border-radius: 6px;
@@ -208,14 +208,14 @@
 }
 
 .dark-card__action-btn--primary {
-  background: var(--button-bg, #c82333);
+  background: var(--button-bg, #667eea);
   color: white;
 }
 
 .dark-card__action-btn--primary:hover:not(:disabled) {
-  background: var(--button-hover, #a71e2a);
+  background: var(--button-hover, #764ba2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(200, 35, 51, 0.3);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
 .dark-card__action-btn--secondary {
@@ -226,27 +226,27 @@
 
 .dark-card__action-btn--secondary:hover:not(:disabled) {
   background: var(--bg-tertiary, #2a2a2a);
-  border-color: var(--button-bg, #c82333);
+  border-color: var(--button-bg, #667eea);
   transform: translateY(-2px);
 }
 
 .dark-card__action-btn--request {
   background: var(--bg-secondary, #1f1f1f);
   color: var(--text-primary, #e0e0e0);
-  border: 2px solid var(--button-bg, #c82333);
+  border: 2px solid var(--button-bg, #667eea);
 }
 
 .dark-card__action-btn--request:hover:not(:disabled) {
-  background: var(--button-bg, #c82333);
+  background: var(--button-bg, #667eea);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(200, 35, 51, 0.3);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
 .dark-card__action-btn--request.active {
-  background: var(--button-bg, #c82333);
+  background: var(--button-bg, #667eea);
   color: white;
-  box-shadow: 0 4px 8px rgba(200, 35, 51, 0.3);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* Icon and Label */
@@ -352,7 +352,7 @@
    ======================================== */
 
 .dark-card__action-btn:focus {
-  outline: 2px solid var(--button-bg, #c82333);
+  outline: 2px solid var(--button-bg, #667eea);
   outline-offset: 2px;
 }
 

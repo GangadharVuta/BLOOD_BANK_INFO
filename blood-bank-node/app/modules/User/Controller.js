@@ -10,6 +10,8 @@ const Authentication = require('../Authentication/Schema').Authtokens;
 const { OTP } = require('../OTP/Schema');
 const CommonService = require("../../services/Common");
 const admin = require("../../../configs/firebase");
+const logger = require("../../../utils/logger");
+const emailService = require("../../../utils/emailService");
 
 
 
@@ -154,6 +156,11 @@ class UsersController extends Controller {
    ********************************************************/
     async login() {
         try {
+            // Validate request body
+            if (!this.req.body.emailId || !this.req.body.password) {
+                return this.res.send({ status: 0, message: "Email and password are required" });
+            }
+
             const user = await Users.findOne({
                 emailId: this.req.body.emailId.toLowerCase(),
                 isDeleted: false
@@ -182,7 +189,8 @@ class UsersController extends Controller {
             });
 
         } catch (error) {
-            return this.res.send({ status: 0, message: "Login failed" });
+            logger.error('Login Error:', { error: error.message, stack: error.stack });
+            return this.res.status(500).send({ status: 0, message: "Login failed", error: error.message });
         }
     }
 
@@ -216,7 +224,7 @@ class UsersController extends Controller {
             return !updatedUser ? this.res.send({ status: 0, message: "Password not updated" }) : this.res.send({ status: 1, data: {}, message: "Password updated successfully" });
 
         } catch (error) {
-            console.log("error- ", error);
+            logger.error("Error in changePassword:", { error: error.message, stack: error.stack });
             return this.res.send({ status: 0, message: error.message || 'An error occurred while changing password' });
         }
     }
@@ -248,7 +256,7 @@ class UsersController extends Controller {
             const updatedUser = await Users.findByIdAndUpdate(currentUser, data, { new: true }).select(userProjection.user);
             return this.res.send({ status: 1, message: "User details updated successfully", data: updatedUser });
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in editUserProfile:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'Server error' });
         }
     }
@@ -267,7 +275,7 @@ class UsersController extends Controller {
             let user = await Users.findOne({ _id: currentUser }, userProjection.user);
             return _.isEmpty(user) ? this.res.send({ status: 0, message: "User details not found" }) : this.res.send({ status: 1, data: user });
         } catch (error) {
-            console.log("error- ", error);
+            logger.error("Error in userProfile:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while fetching user profile' });
         }
     }
@@ -291,38 +299,83 @@ class UsersController extends Controller {
             }
 
         } catch (error) {
-            console.log('error', error);
+            logger.error('Error in logout:', { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred during logout' });
         }
 
     }
     async saveFcmToken() {
-  try {
-    const userId = this.req.currentUser._id;
-    const { fcmToken } = this.req.body;
+      try {
+        // Validate user is authenticated
+        if (!this.req.currentUser || !this.req.currentUser._id) {
+          return this.res.status(401).send({
+            status: 0,
+            message: "User not authenticated"
+          });
+        }
 
-    if (!fcmToken) {
-      return this.res.send({
-        status: 0,
-        message: "FCM token missing",
-      });
+        const userId = this.req.currentUser._id;
+        const { fcmToken } = this.req.body;
+
+        // Validate FCM token
+        if (!fcmToken || typeof fcmToken !== 'string') {
+          return this.res.status(400).send({
+            status: 0,
+            message: "Invalid FCM token: must be a non-empty string"
+          });
+        }
+
+        // FCM tokens are typically 152+ characters
+        if (fcmToken.length < 100) {
+          return this.res.status(400).send({
+            status: 0,
+            message: "Invalid FCM token format"
+          });
+        }
+
+        // Update user's FCM token
+        const updatedUser = await Users.findByIdAndUpdate(
+          userId,
+          { 
+            fcmToken,
+            lastFcmTokenUpdate: new Date()
+          },
+          { new: true }
+        );
+
+        if (!updatedUser) {
+          return this.res.status(404).send({
+            status: 0,
+            message: "User not found"
+          });
+        }
+
+        logger.info('FCM token saved successfully', {
+          userId,
+          timestamp: new Date().toISOString()
+        });
+
+        return this.res.status(200).send({
+          status: 1,
+          message: "FCM token saved successfully",
+          data: {
+            userId,
+            savedAt: new Date().toISOString()
+          }
+        });
+      } catch (error) {
+        logger.error('Error saving FCM token', {
+          error: error.message,
+          stack: error.stack,
+          userId: this.req.currentUser?._id
+        });
+
+        return this.res.status(500).send({
+          status: 0,
+          message: "Failed to save FCM token"
+        });
+      }
     }
-
-    await Users.findByIdAndUpdate(userId, {
-      fcmToken,
-    });
-
-    return this.res.send({
-      status: 1,
-      message: "FCM token saved successfully",
-    });
-  } catch (error) {
-    return this.res.send({
-      status: 0,
-      message: "Failed to save FCM token",
-    });
-  }
-}
 
 async sendTestNotification() {
   try {
@@ -343,7 +396,7 @@ async sendTestNotification() {
     return this.res.send({ status: 1, message: "Notification sent successfully" });
 
   } catch (error) {
-    console.error(error);
+    logger.error("Error sending test notification:", { error: error.message, stack: error.stack });
     return this.res.send({ status: 0, message: "Notification failed" });
   }
 }
@@ -400,9 +453,14 @@ async forgotPasswordSendOtp() {
             expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
         });
 
-        // TODO: In production, send email with OTP using service like SendGrid, Nodemailer, etc.
-        // For now, log OTP in console (development only)
-        console.log(`[PASSWORD RESET OTP] Email: ${emailId}, OTP: ${otp}`);
+        // Send OTP via email
+        try {
+            await emailService.sendPasswordResetEmail(emailId, otp, 10);
+            logger.info(`Password reset OTP sent to ${emailId}`);
+        } catch (emailError) {
+            logger.warn(`Failed to send email to ${emailId}, but OTP saved. Error: ${emailError.message}`);
+            // Continue anyway - OTP was saved to database
+        }
 
         return this.res.send({
             status: 1,
@@ -411,7 +469,7 @@ async forgotPasswordSendOtp() {
         });
 
     } catch (error) {
-        console.log("Error in forgotPasswordSendOtp:", error);
+        logger.error("Error in forgotPasswordSendOtp:", { error: error.message, stack: error.stack });
         return this.res.send({
             status: 0,
             message: error.message || "An error occurred while sending OTP"
@@ -502,7 +560,7 @@ async resetPassword() {
         });
 
     } catch (error) {
-        console.log("Error in resetPassword:", error);
+        logger.error("Error in resetPassword:", { error: error.message, stack: error.stack });
         return this.res.send({
             status: 0,
             message: error.message || "An error occurred while resetting password"

@@ -16,7 +16,7 @@
 }
 
 .add-donor-header {
-  background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 40px 30px;
   text-align: center;
@@ -45,7 +45,7 @@
   color: #721c24;
   border: 1px solid #f5c6cb;
   border-radius: 6px;
-  border-left: 4px solid #dc3545;
+  border-left: 4px solid #667eea;
   animation: slideIn 0.3s ease-out;
 }
 
@@ -78,7 +78,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #333;
+  color: black;
   font-size: 0.95em;
 }
 
@@ -94,7 +94,7 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #dc3545;
+  border-color: #667eea;
   box-shadow: 0 0 8px rgba(220, 53, 69, 0.2);
 }
 
@@ -144,14 +144,14 @@
 }
 
 .btn-primary {
-  background-color: #dc3545;
+  background-color: #667eea;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #c82333;
+  background-color: #764ba2;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
 }
 
 .btn-secondary {

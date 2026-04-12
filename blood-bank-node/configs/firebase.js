@@ -5,6 +5,7 @@
 
 const admin = require("firebase-admin");
 const path = require("path");
+const logger = require('../utils/logger');
 
 let app = null;
 
@@ -19,13 +20,13 @@ try {
     try {
       serviceAccount = JSON.parse(serviceAccountJson);
     } catch (e) {
-      console.error("Invalid JSON in FIREBASE_SERVICE_ACCOUNT_JSON:", e.message);
+      logger.error("Invalid JSON in FIREBASE_SERVICE_ACCOUNT_JSON", { error: e.message });
     }
   } else if (serviceAccountPath) {
     try {
       serviceAccount = require(path.resolve(serviceAccountPath));
     } catch (e) {
-      console.error(`Failed to load service account from ${serviceAccountPath}:`, e.message);
+      logger.error(`Failed to load service account from ${serviceAccountPath}`, { error: e.message });
     }
   }
 
@@ -34,12 +35,21 @@ try {
       credential: admin.credential.cert(serviceAccount),
       projectId: process.env.FIREBASE_PROJECT_ID,
     });
-    console.log("✅ Firebase Admin SDK initialized");
+    logger.info("✅ Firebase Admin SDK initialized successfully");
   } else {
-    console.warn("⚠️ Firebase Admin SDK not configured. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_PATH in .env");
+    logger.warn("⚠️ Firebase Admin SDK not configured. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_PATH in .env");
+    
+    // In production, this is critical
+    if (process.env.NODE_ENV === 'production') {
+      logger.error("Firebase is required in production. Exiting.");
+      process.exit(1);
+    }
   }
 } catch (error) {
-  console.error("❌ Error initializing Firebase Admin SDK:", error.message);
+  logger.error("❌ Error initializing Firebase Admin SDK", { error: error.message });
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
 }
 
 module.exports = admin;

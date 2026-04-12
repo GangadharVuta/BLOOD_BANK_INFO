@@ -7,10 +7,11 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
     .then((registration) => {
-      console.log("✅ FCM Service Worker registered:", registration);
+      console.log("✅ Service Worker registered:", registration.scope);
     })
     .catch((err) => {
-      console.error("❌ Service Worker registration failed:", err);
+      console.info("ℹ️ Service Worker registration not critical:", err.message);
+      // Service worker is optional - app works without it
     });
 }
 

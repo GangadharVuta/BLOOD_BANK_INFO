@@ -50,32 +50,53 @@ let messaging = null;
  * Check if browser supports FCM
  */
 const isFcmSupported = () => {
-  return (
-    "serviceWorker" in navigator &&
-    "PushManager" in window &&
-    "Notification" in window &&
-    typeof window.indexedDB !== "undefined"
-  );
+  const checks = {
+    serviceWorker: "serviceWorker" in navigator,
+    pushManager: "PushManager" in window,
+    notification: "Notification" in window,
+    indexedDB: typeof window.indexedDB !== "undefined",
+  };
+  
+  const supported = Object.values(checks).every(v => v);
+  
+  if (!supported) {
+    const missing = Object.entries(checks)
+      .filter(([_, check]) => !check)
+      .map(([name]) => name);
+    console.warn(`⚠️ Browser missing FCM APIs: ${missing.join(", ")}`);
+  }
+  
+  return supported;
 };
 
 // Initialize messaging only if supported
-if (isFcmSupported()) {
-  try {
-    messaging = getMessaging(app);
-    console.log("✅ Firebase Messaging initialized");
-  } catch (err) {
-    console.warn("⚠️ FCM not supported in this browser:", err.message);
+try {
+  if (isFcmSupported()) {
+    try {
+      messaging = getMessaging(app);
+      console.log("✅ Firebase Messaging initialized successfully");
+    } catch (err) {
+      console.warn("⚠️ Firebase Messaging initialization failed:", err.message);
+      messaging = null;
+    }
+  } else {
+    console.info("ℹ️ Firebase Messaging disabled: Browser doesn't support required APIs");
     messaging = null;
   }
-} else {
-  console.warn("⚠️ Browser doesn't support FCM. Missing APIs: ServiceWorker, PushManager, Notification, or IndexedDB");
+} catch (outerErr) {
+  // Catch any unexpected errors during FCM initialization
+  console.warn("⚠️ Unexpected error during FCM setup:", outerErr.message);
   messaging = null;
 }
 
 // Get FCM token
 const getFcmToken = async () => {
   try {
-    if (!messaging) return null;
+    // Skip if messaging is not available
+    if (!messaging) {
+      console.debug("ℹ️ FCM messaging not available");
+      return null;
+    }
 
     const token = await getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
@@ -85,16 +106,11 @@ const getFcmToken = async () => {
       console.log("🔔 FCM Token:", token);
       return token;
     } else {
-      console.warn("No FCM token received");
+      console.warn("ℹ️ No FCM token received (user may have denied permission)");
       return null;
     }
   } catch (error) {
-    console.error("Error getting FCM token", error);
-    console.log(
-      "VAPID FROM ENV:",
-      process.env.REACT_APP_FIREBASE_VAPID_KEY
-    );
-
+    console.warn("ℹ️ Failed to get FCM token:", error.message);
     return null;
   }
 };
@@ -102,10 +118,20 @@ const getFcmToken = async () => {
 // Listen for foreground messages
 const onMessageListener = () =>
   new Promise((resolve) => {
-    if (!messaging) return;
-    onMessage(messaging, (payload) => {
-      resolve(payload);
-    });
+    if (!messaging) {
+      console.debug("ℹ️ FCM messaging not available");
+      resolve(null);
+      return;
+    }
+    
+    try {
+      onMessage(messaging, (payload) => {
+        resolve(payload);
+      });
+    } catch (error) {
+      console.warn("ℹ️ Failed to setup message listener:", error.message);
+      resolve(null);
+    }
   });
 
 export {

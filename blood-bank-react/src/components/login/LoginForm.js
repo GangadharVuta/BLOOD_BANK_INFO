@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { apiService } from '../../services/apiService';
 import './Loginpage.css';
 import swal from 'sweetalert';
 
@@ -14,12 +14,7 @@ const LoginPage = () => {
     const handleLogin = async () => {
         try {
             console.log('Attempting login with:', { emailId, password });
-            const response = await axios.post('/api/users/login', { emailId, password }, {
-                timeout: 10000,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await apiService.post('/api/users/login', { emailId, password });
             console.log('Login response:', response.data);
             if (response.data.status === 0) {
                 swal({
@@ -29,6 +24,7 @@ const LoginPage = () => {
                     button: "Okay"
                 });
             } else {
+                // Store token and user data
                 localStorage.setItem('token', response.data.access_token);
                 localStorage.setItem('userId', response.data.data._id);
                 swal(typeof response.data.message === 'string' ? response.data.message : JSON.stringify(response.data.message));

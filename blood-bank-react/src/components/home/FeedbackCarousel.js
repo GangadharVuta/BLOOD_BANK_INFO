@@ -8,6 +8,7 @@
  * - Manual navigation
  * - Responsive design
  * - Dark mode support
+ * - Platform statistics
  */
 
 import React, { useState, useEffect } from 'react';
@@ -22,8 +23,10 @@ const FeedbackCarousel = () => {
   const [error, setError] = useState(null);
   const [autoPlay, setAutoPlay] = useState(true);
 
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
   /**
-   * Fetch public feedback and statistics
+   * Fetch public approved feedback and statistics
    */
   useEffect(() => {
     fetchFeedbackData();
@@ -34,16 +37,28 @@ const FeedbackCarousel = () => {
       setIsLoading(true);
       setError(null);
 
-      // Fetch feedback
-      const feedbackRes = await axios.get('/api/feedback/public', {
-        params: { limit: 10, skip: 0 }
-      });
+      // Fetch approved public feedback (limit 10)
+      const feedbackRes = await axios.get(
+        `${API_BASE_URL}/api/feedback/public`,
+        { params: { limit: 10, skip: 0 } }
+      );
 
-      // Fetch statistics
-      const statsRes = await axios.get('/api/feedback/stats/platform');
+      // Fetch platform statistics
+      const statsRes = await axios.get(
+        `${API_BASE_URL}/api/feedback/stats/platform`
+      );
 
       if (feedbackRes.data.status === 1) {
-        setFeedbacks(feedbackRes.data.data || []);
+        const processedFeedbacks = feedbackRes.data.data.map(fb => ({
+          id: fb._id,
+          role: fb.role, // Already 'Donor' or 'Recipient'
+          bloodGroup: fb.bloodGroup,
+          rating: fb.rating,
+          message: fb.message,
+          createdAt: fb.createdAt,
+          wouldRecommend: fb.wouldRecommend
+        }));
+        setFeedbacks(processedFeedbacks);
       }
 
       if (statsRes.data.status === 1) {
@@ -52,28 +67,47 @@ const FeedbackCarousel = () => {
     } catch (err) {
       console.error('Error fetching feedback:', err);
       setError(err.message);
-      // Set some default feedback for demo
+
+      // Fallback demo feedback
       setFeedbacks([
         {
+          id: 1,
           role: 'Recipient',
           bloodGroup: 'B+',
           rating: 5,
-          message: 'Got blood within 30 minutes. Blood Connect saved my life!',
-          createdAt: new Date()
+          message:
+            'Blood Connect helped me find a donor in emergency. Got blood within 30 minutes. This platform is a lifesaver!',
+          createdAt: new Date(),
+          wouldRecommend: true
         },
         {
+          id: 2,
           role: 'Donor',
           bloodGroup: 'O+',
           rating: 5,
-          message: 'Easy to connect with patients. Smooth process and good communication.',
-          createdAt: new Date()
+          message:
+            'Very easy to use and connect with recipients. Smooth process, great communication. Great initiative for society!',
+          createdAt: new Date('2024-01-15'),
+          wouldRecommend: true
+        },
+        {
+          id: 3,
+          role: 'Recipient',
+          bloodGroup: 'A-',
+          rating: 4,
+          message:
+            'Found a blood donor quickly. The platform is user-friendly and the team is very responsive.',
+          createdAt: new Date('2024-01-10'),
+          wouldRecommend: true
         }
       ]);
+
       setStats({
-        totalSuccessfulDonations: 120,
-        totalRegisteredDonors: 350,
-        averagePlatformRating: 4.7,
-        totalFeedbacks: 65
+        totalSuccessfulDonations: 280,
+        totalRegisteredDonors: 450,
+        averagePlatformRating: 4.8,
+        totalFeedbacks: 125,
+        totalRatedDonors: 95
       });
     } finally {
       setIsLoading(false);
@@ -87,8 +121,8 @@ const FeedbackCarousel = () => {
     if (!autoPlay || feedbacks.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex(prev => (prev + 1) % feedbacks.length);
-    }, 5000); // Change every 5 seconds
+      setCurrentIndex((prev) => (prev + 1) % feedbacks.length);
+    }, 6000); // Change every 6 seconds
 
     return () => clearInterval(interval);
   }, [autoPlay, feedbacks.length]);
@@ -97,16 +131,19 @@ const FeedbackCarousel = () => {
    * Handle previous slide
    */
   const handlePrev = () => {
-    setCurrentIndex(prev => (prev - 1 + feedbacks.length) % feedbacks.length);
+    setCurrentIndex((prev) => (prev - 1 + feedbacks.length) % feedbacks.length);
     setAutoPlay(false);
+    // Resume autoplay after 10 seconds of manual navigation
+    setTimeout(() => setAutoPlay(true), 10000);
   };
 
   /**
    * Handle next slide
    */
   const handleNext = () => {
-    setCurrentIndex(prev => (prev + 1) % feedbacks.length);
+    setCurrentIndex((prev) => (prev + 1) % feedbacks.length);
     setAutoPlay(false);
+    setTimeout(() => setAutoPlay(true), 10000);
   };
 
   /**
@@ -115,6 +152,7 @@ const FeedbackCarousel = () => {
   const goToSlide = (index) => {
     setCurrentIndex(index);
     setAutoPlay(false);
+    setTimeout(() => setAutoPlay(true), 10000);
   };
 
   /**
@@ -131,7 +169,10 @@ const FeedbackCarousel = () => {
   if (isLoading) {
     return (
       <div className="feedback-section">
-        <div className="loading">Loading testimonials...</div>
+        <div className="loading">
+          <div className="spinner"></div>
+          Loading testimonials...
+        </div>
       </div>
     );
   }
@@ -139,7 +180,7 @@ const FeedbackCarousel = () => {
   if (!feedbacks || feedbacks.length === 0) {
     return (
       <div className="feedback-section">
-        <div className="no-feedback">No testimonials available yet.</div>
+        <div className="no-feedback">No testimonials available yet. Be the first to share!</div>
       </div>
     );
   }
@@ -150,7 +191,7 @@ const FeedbackCarousel = () => {
     <section className="feedback-section">
       <div className="feedback-container">
         {/* Section Title */}
-        <h2 className="feedback-title">What Our Users Say ❤️</h2>
+        <h2 className="feedback-title">What Our Community Says ❤️</h2>
 
         {/* Platform Statistics */}
         {stats && (
@@ -175,7 +216,15 @@ const FeedbackCarousel = () => {
               <span className="stat-icon">⭐</span>
               <div className="stat-content">
                 <p className="stat-number">{stats.averagePlatformRating}</p>
-                <p className="stat-label">Average Rating</p>
+                <p className="stat-label">Community Rating</p>
+              </div>
+            </div>
+
+            <div className="stat-card">
+              <span className="stat-icon">💬</span>
+              <div className="stat-content">
+                <p className="stat-number">{stats.totalFeedbacks}+</p>
+                <p className="stat-label">Feedback Reviews</p>
               </div>
             </div>
           </div>
@@ -199,12 +248,13 @@ const FeedbackCarousel = () => {
                 <span className="feedback-blood-group">
                   💉 {currentFeedback.bloodGroup}
                 </span>
+                {currentFeedback.wouldRecommend && (
+                  <span className="recommend-badge">✓ Recommends</span>
+                )}
               </div>
 
               {/* Feedback Message */}
-              <p className="feedback-message">
-                "{currentFeedback.message}"
-              </p>
+              <p className="feedback-message">"{currentFeedback.message}"</p>
 
               {/* Timestamp */}
               {currentFeedback.createdAt && (
@@ -220,18 +270,30 @@ const FeedbackCarousel = () => {
           </div>
 
           {/* Navigation Buttons */}
-          <button className="carousel-btn prev-btn" onClick={handlePrev} title="Previous">
+          <button
+            className="carousel-btn prev-btn"
+            onClick={handlePrev}
+            title="Previous feedback"
+            aria-label="Previous feedback"
+          >
             ❮
           </button>
-          <button className="carousel-btn next-btn" onClick={handleNext} title="Next">
+          <button
+            className="carousel-btn next-btn"
+            onClick={handleNext}
+            title="Next feedback"
+            aria-label="Next feedback"
+          >
             ❯
           </button>
 
           {/* Carousel Indicators */}
-          <div className="carousel-indicators">
+          <div className="carousel-indicators" role="tablist" aria-label="Feedback slides">
             {feedbacks.map((_, index) => (
               <button
                 key={index}
+                role="tab"
+                aria-selected={index === currentIndex}
                 className={`indicator ${index === currentIndex ? 'active' : ''}`}
                 onClick={() => goToSlide(index)}
                 title={`Go to feedback ${index + 1}`}
@@ -248,8 +310,11 @@ const FeedbackCarousel = () => {
         {/* Call to Action */}
         <div className="feedback-cta">
           <p>Share your experience with Blood Connect!</p>
-          <button className="cta-button" onClick={() => window.location.href = '/give-feedback'}>
-            Write Your Feedback
+          <button
+            className="cta-button"
+            onClick={() => (window.location.href = '/register')}
+          >
+            Join Our Community
           </button>
         </div>
       </div>

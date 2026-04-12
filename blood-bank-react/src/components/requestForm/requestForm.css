@@ -92,8 +92,8 @@ button[type="submit"]:disabled {
 }
 
 .form-container a {
-    color: #dc3545;
-    /* red */
+    color: #667eea;
+    /* blue */
     text-decoration: none;
 }
 

@@ -67,7 +67,8 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return (R * c).toFixed(2);
+  // Return as number (2 decimal places) for proper calculation and comparison
+  return Math.round(R * c * 100) / 100;
 };
 
 // ✅ Nominatim API - Geocode location string to lat/lon
@@ -190,7 +191,7 @@ const fetchNearbyBloodBanks = async (lat, lon, radiusKm = 5, retries = 3) => {
       });
 
       // Sort by distance
-      return bloodBanks.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+      return bloodBanks.sort((a, b) => a.distance - b.distance);
     } catch (error) {
       if (error.name === 'AbortError') {
         console.error(`⏱️ Attempt ${attempt}: Request timeout (>30 seconds)`);
@@ -256,7 +257,7 @@ const getMockBloodBanks = (lat, lon) => {
     },
   ];
 
-  return mockData.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+  return mockData.sort((a, b) => a.distance - b.distance);
 };
 
 // ✅ Get availability status randomly (demo feature)
@@ -298,6 +299,63 @@ const NearbyBloodBanks = () => {
   useEffect(() => {
     localStorage.setItem("bloodBankFavorites", JSON.stringify(favorites));
   }, [favorites]);
+
+  // Auto-search on component mount with default location
+  useEffect(() => {
+    const autoSearch = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Geocode default location
+        const location = await geocodeLocation(locationInput);
+        setUserLocation(location);
+        setMapCenter([location.lat, location.lon]);
+
+        // Fetch blood banks with default radius
+        let banks = await fetchNearbyBloodBanks(location.lat, location.lon, radius);
+
+        // If no results from API, use mock data as fallback
+        if (banks.length === 0) {
+          console.warn("No live data available, using mock data...");
+          banks = getMockBloodBanks(location.lat, location.lon);
+          setError(`⚠️ Showing sample blood bank locations. Live API data unavailable.`);
+        } else {
+          // Show info if using mock data
+          const mockBanks = banks.filter(b => String(b.id).includes('mock_'));
+          if (mockBanks.length > 0) {
+            setError(`⚠️ Showing ${mockBanks.length} sample locations (Live data unavailable. Please try again in a moment.)`);
+          }
+        }
+
+        setBloodBanks(banks);
+      } catch (err) {
+        console.error("Auto-search error:", err);
+        
+        // Fallback: Use mock data with default location
+        try {
+          const location = {
+            lat: 17.6869,
+            lon: 83.2185,
+            address: "Visakhapatnam, India"
+          };
+          setUserLocation(location);
+          setMapCenter([location.lat, location.lon]);
+          
+          const mockBanks = getMockBloodBanks(location.lat, location.lon);
+          setBloodBanks(mockBanks);
+          setError(`⚠️ Showing sample blood bank locations. Unable to fetch live data at this moment.`);
+        } catch (fallbackErr) {
+          console.error("Fallback error:", fallbackErr);
+          setError("Unable to load blood banks. Please try again.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    autoSearch();
+  }, []); // Run only once on mount
 
   // Search for blood banks
   const handleSearch = async (e) => {
@@ -441,10 +499,10 @@ const NearbyBloodBanks = () => {
 
       {/* Main Content */}
       {!loading && (
-        <div className="content-wrapper">
+        <div className="nearby-banks__content">
           {/* Map Section */}
           {userLocation && (
-            <div className="map-section">
+            <div className="nearby-banks__map-section">
               <h2>Map View</h2>
               <MapContainer
                 ref={mapRef}
@@ -479,7 +537,7 @@ const NearbyBloodBanks = () => {
                           {bank.type}
                         </p>
                         <p style={{ fontSize: "0.85em", margin: "3px 0" }}>
-                          Distance: {bank.distance} km
+                          Distance: {bank.distance.toFixed(2)} km
                         </p>
                       </div>
                     </Popup>
@@ -490,15 +548,15 @@ const NearbyBloodBanks = () => {
           )}
 
           {/* Blood Banks List */}
-          <div className="banks-list-section">
-            <div className="list-header">
+          <div className="nearby-banks__list-section">
+            <div className="nearby-banks__list-header">
               <h2>
                 {bloodBanks.length > 0
                   ? `🏥 ${bloodBanks.length} Results Found`
                   : "No Results"}
               </h2>
               {bloodBanks.length > 0 && (
-                <p className="result-info">
+                <p className="nearby-banks__result-info">
                   Showing {displayedBanks.length} of {bloodBanks.length} nearest locations
                 </p>
               )}
@@ -506,7 +564,7 @@ const NearbyBloodBanks = () => {
 
             {bloodBanks.length > 0 ? (
               <>
-                <div className="banks-list">
+                <div className="nearby-banks__cards-container">
                   {displayedBanks.map((bank) => {
                     const availability = getAvailabilityStatus();
                     return (
@@ -529,7 +587,7 @@ const NearbyBloodBanks = () => {
                               {bank.type === "Blood Bank" ? "🔴 Blood Bank" : "🏥 Hospital"}
                             </p>
                           </div>
-                          <div className="distance-badge">{bank.distance} km</div>
+                          <div className="distance-badge">{bank.distance.toFixed(2)} km</div>
                         </div>
 
                         <div className="bank-details">
@@ -607,10 +665,10 @@ const NearbyBloodBanks = () => {
 
                 {/* View More Button */}
                 {hasMoreResults && (
-                  <div className="view-more-container">
+                  <div className="nearby-banks__view-more-container">
                     <button
                       onClick={() => setShowAll(!showAll)}
-                      className="view-more-btn"
+                      className="nearby-banks__view-more-btn"
                     >
                       {showAll
                         ? `▲ Show Less (${defaultDisplayCount} Results)`
@@ -621,7 +679,7 @@ const NearbyBloodBanks = () => {
               </>
             ) : (
               !loading && userLocation && (
-                <div className="no-results">
+                <div className="nearby-banks__no-results">
                   <p>❌ No blood banks or hospitals found within {radius}km radius.</p>
                   <p>Try searching in a different area or increase the radius.</p>
                 </div>

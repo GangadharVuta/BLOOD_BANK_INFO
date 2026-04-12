@@ -257,6 +257,52 @@
   display: none;
 }
 
+/* ============ SCROLLABLE NAVIGATION ============ */
+.scrollable-nav {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 5px;
+}
+
+.scrollable-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollable-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.scrollable-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Submenu items styling */
+.nav-item.submenu-item {
+  padding-left: 40px;
+  font-size: 13px;
+  color: var(--sidebar-text-muted, #999);
+}
+
+.nav-item.submenu-item:hover {
+  background: var(--sidebar-hover-bg, rgba(102, 126, 234, 0.15));
+}
+
+.nav-item.submenu-item.active {
+  color: var(--primary-color, #667eea);
+  background: var(--sidebar-active-bg, rgba(102, 126, 234, 0.2));
+}
+
+/* Donor menu specific */
+.nav-item.donor-menu {
+  justify-content: space-between;
+}
+
 /* ============ RESPONSIVE DESIGN ============ */
 @media (min-width: 769px) {
   .main-sidebar {

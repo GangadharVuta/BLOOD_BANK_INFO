@@ -125,15 +125,15 @@
 .btn-danger {
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
-  border: 1px solid #dc3545;
-  background: #dc3545;
+  border: 1px solid #667eea;
+  background: #667eea;
   cursor: pointer;
   color: #fff;
   font-weight: 600;
 }
 
 .btn-danger:hover {
-  background: #c82333;
+  background: #764ba2;
 }
 
 .no-admins {

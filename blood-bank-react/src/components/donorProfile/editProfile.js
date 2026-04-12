@@ -14,6 +14,7 @@ const EditProfile = () => {
     emailId: '',
     pincode: '',
     bloodGroup: '',
+    lastDonationDate: '',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -179,6 +180,16 @@ const EditProfile = () => {
                 <option value="AB+">AB+</option>
                 <option value="AB-">AB-</option>
               </select>
+            </div>
+            <div>
+              <label>Last Donation Date:</label>
+              <input
+                type="date"
+                name="lastDonationDate"
+                value={donor.lastDonationDate}
+                onChange={handleChange}
+              />
+              <small>Donors are eligible to donate again after 3 months from their last donation date. Leave empty if no donation history.</small>
             </div>
             <button type="submit">Save Changes</button>
           </form>

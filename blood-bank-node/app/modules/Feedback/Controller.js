@@ -20,7 +20,7 @@ const { ObjectId } = require('mongodb');
 const submitFeedback = async (req, res) => {
   try {
     const { role, bloodGroup, rating, message, donationId } = req.body;
-    const userId = req.user._id || req.user.id;
+    const userId = req.currentUser._id || req.currentUser.id;
 
     // Validation
     if (!role || !['Donor', 'Recipient'].includes(role)) {
@@ -183,7 +183,7 @@ const approveFeedback = async (req, res) => {
   try {
     const { id } = req.params;
     const { isApproved } = req.body;
-    const adminId = req.user._id || req.user.id;
+    const adminId = req.currentUser._id || req.currentUser.id;
 
     if (typeof isApproved !== 'boolean') {
       return res.status(400).json({
@@ -305,11 +305,18 @@ const getPlatformStats = async (req, res) => {
       isDeleted: false
     });
 
+    // Get actual registered donors from Users collection
+    const totalRegisteredDonors = await Users.countDocuments({
+      role: 'Donor',
+      isActive: true,
+      isDeleted: false
+    });
+
     // Placeholder for actual donation stats (link to Donation collection if exists)
     // For now, using feedback count as proxy
     const stats = {
       totalSuccessfulDonations: totalFeedbacks * 2, // Estimate (each feedback = 1 user, could be 2 per donation)
-      totalRegisteredDonors: 350, // This should come from Users collection count
+      totalRegisteredDonors: totalRegisteredDonors, // Real count from Users collection
       averagePlatformRating: averageRating.toFixed(1),
       totalFeedbacks,
       donorFeedbacks: donorStats,
@@ -335,7 +342,7 @@ const getPlatformStats = async (req, res) => {
  */
 const getMyFeedback = async (req, res) => {
   try {
-    const userId = req.user._id || req.user.id;
+    const userId = req.currentUser._id || req.currentUser.id;
 
     const feedbacks = await Feedback.find({
       userId: new ObjectId(userId),

@@ -30,7 +30,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #e53935;
+    background-color: #667eea;
     padding: 10px 20px;
     color: #0e0d0d;
 }
@@ -58,7 +58,7 @@
 
 .register-nav-btn {
     background-color: white;
-    color: #e53935;
+    color: #667eea;
     border: 2px solid white;
     padding: 8px 16px;
     border-radius: 6px;
@@ -142,7 +142,7 @@
 
 .advantages-section {
     padding: 60px 20px;
-    background: var(--bg-secondary, #f8f9fa);
+        background: #2D2D44;
     text-align: center;
 }
 

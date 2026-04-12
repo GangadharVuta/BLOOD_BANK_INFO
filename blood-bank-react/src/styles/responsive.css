@@ -210,8 +210,8 @@ select:focus,
 textarea:focus,
 .form-control:focus {
   outline: none;
-  border-color: var(--button-bg, #c82333);
-  box-shadow: 0 0 8px rgba(200, 35, 51, 0.2);
+  border-color: var(--button-bg, #667eea);
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
 }
 
 input::placeholder,
@@ -591,7 +591,7 @@ button:focus,
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid var(--button-bg, #c82333);
+  outline: 2px solid var(--button-bg, #667eea);
   outline-offset: 2px;
 }
 
@@ -600,7 +600,7 @@ textarea:focus {
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--button-bg, #c82333);
+  background: var(--button-bg, #667eea);
   color: white;
   padding: 8px;
   text-decoration: none;

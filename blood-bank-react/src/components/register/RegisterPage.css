@@ -35,7 +35,7 @@ body {
 }
 
 .register-header .logo {
-  width: 80px;
+  width: 100px;
   margin-bottom: 10px;
 }
 
@@ -84,7 +84,7 @@ body {
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #e53935;
+  border-color: #667eea;
 }
 
 .form-hint {
@@ -125,7 +125,7 @@ body {
 }
 
 .btn-primary {
-  background-color: #e53935;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
@@ -164,7 +164,7 @@ body {
 }
 
 .register-footer a {
-  color: #e53935;
+  color: #667eea;
   text-decoration: none;
   font-weight: 500;
 }
@@ -187,7 +187,7 @@ body {
 /* Desktop */
 @media (min-width: 992px) {
   .register-container {
-    background: linear-gradient(135deg, #f44336, #e57373);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
 
   .register-box {

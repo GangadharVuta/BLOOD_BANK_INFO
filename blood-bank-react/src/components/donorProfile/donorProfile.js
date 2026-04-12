@@ -3,10 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import './donorProfile.css';
-import Logo from '../../assets/logo.png';
 import UserLogo from '../../assets/user.png';
 import { FaPen } from 'react-icons/fa'; // Pencil Icon
-import Sidebar from '../sidebar/sidebar';
 import swal from 'sweetalert';
 
 
@@ -14,6 +12,15 @@ const DonorProfile = () => {
   const [donor, setDonor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Calculate if donor is available based on last donation date
+  const isAvailable = (donor) => {
+    if (!donor || !donor.lastDonationDate) return true; // Assume available if no history
+    const lastDonation = dayjs(donor.lastDonationDate);
+    const today = dayjs();
+    const monthsPassed = today.diff(lastDonation, 'month');
+    return monthsPassed >= 3;
+  };
 
   useEffect(() => {
     const fetchDonor = async () => {
@@ -42,12 +49,7 @@ const DonorProfile = () => {
           });
           setError('Failed to load profile');
         } else {
-          const donorData = response.data.data;
-          const lastDonation = dayjs(donorData.lastDonationDate);
-          const today = dayjs();
-          const monthsPassed = today.diff(lastDonation, 'month');
-          donorData.isAvailable = monthsPassed >= 3;
-          setDonor(donorData);
+          setDonor(response.data.data);
           setLoading(false);
         }
 
@@ -70,35 +72,30 @@ const DonorProfile = () => {
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="donor-profile-container">
-      <div className="dashboard responsive-layout">
-        {/* Sidebar */}
-        <Sidebar />
-        {/* Main */}
-        <main className="main">
-          <header className="header">
-            <div>
-              <h2>User Profile</h2>
-              <p>Welcome to Blood Connect Portal</p>
-            </div>
-            <Link to={`/edit-profile`} className="edit-icon" title="Edit Profile">
-              <FaPen size={20} />
-            </Link>
-          </header>
+    <>
+      <header className="header">
+        <div>
+          <h2>User Profile</h2>
+          <p>Welcome to Blood Connect Portal</p>
+        </div>
+        <Link to={`/edit-profile`} className="edit-icon" title="Edit Profile">
+          <FaPen size={20} />
+        </Link>
+      </header>
 
-          <div className="grid profile-grid">
-            <div className="card profile-card">
-              <img className="profile-pic" src={UserLogo} alt="profile" />
-              <p>Name: <strong>{donor.userName}</strong></p>
-              <p>Phone No: <strong>{donor.phoneNumber}</strong></p>
-              <p>Email: <strong>{donor.emailId}</strong></p>
-              <p>Pincode: <strong>{donor.pincode}</strong></p>
-              <p>Blood Group: <strong>{donor.bloodGroup}</strong></p>
-            </div>
-          </div>
-        </main>
+      <div className="grid profile-grid">
+        <div className="profile-card">
+          <img className="profile-pic" src={UserLogo} alt="profile" />
+          <p>Name: <strong>{donor.userName}</strong></p>
+          <p>Phone No: <strong>{donor.phoneNumber}</strong></p>
+          <p>Email: <strong>{donor.emailId}</strong></p>
+          <p>Pincode: <strong>{donor.pincode}</strong></p>
+          <p>Blood Group: <strong>{donor.bloodGroup}</strong></p>
+          <p>Last Donation Date: <strong>{donor.lastDonationDate ? dayjs(donor.lastDonationDate).format('DD MMM YYYY') : 'No donation history'}</strong></p>
+          <p>Donation Status: <strong>{isAvailable(donor) ? '✅ Available' : '⏳ Not Available (3-month cooldown)'}</strong></p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

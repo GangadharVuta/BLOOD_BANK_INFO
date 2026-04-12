@@ -47,5 +47,12 @@ module.exports = (app, express) => {
         const requestObj = (new RequestsController()).boot(req, res);
         return requestObj.getDonorsForRequest();
     });
+
+    // new endpoint: get requests received by current donor
+    router.get('/requests/donor/received', Globals.isAuthorised, (req, res, next) => {
+        const requestObj = (new RequestsController()).boot(req, res);
+        return requestObj.getDonorReceivedRequests();
+    });
+
     app.use(config.baseApiUrl, router);
 }

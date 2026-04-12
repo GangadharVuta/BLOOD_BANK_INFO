@@ -4,8 +4,9 @@ body {
 }
 
 /* Dashboard Layout */
-.dashboard {
-    display: flex;
+.dashboard-content {
+    width: 100%;
+    background-color: #f9f9f9;
 }
 
 .responsive-layout {
@@ -19,9 +20,9 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 100vh;
+    width: 100%;
     background-color: #f9f9f9;
-    padding: 20px;
+    padding: 0;
     overflow-y: auto;
 }
 

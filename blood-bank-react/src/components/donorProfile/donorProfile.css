@@ -1,84 +1,5 @@
-/* Layout Container */
-.donor-profile-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Top Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #dc3545;
-  color: #fff;
-  padding: 15px 30px;
-}
-
-.logo {
-  height: 40px;
-}
-
-.nav-links a {
-  color: #e53935;
-  margin-left: 20px;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.nav-links a:hover {
-  text-decoration: underline;
-}
-
-/* Dashboard Grid */
-.dashboard {
-  display: flex;
-  flex: 1;
-}
-
-/* Sidebar Styles */
-.sidebar {
-  width: 220px;
-  background-color: #f8d7da;
-  /* light red background */
-  padding: 30px 0;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-  min-height: calc(100vh - 60px);
-  /* Adjust based on navbar height */
-}
-
-.sidebar nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar nav ul li {
-  padding: 15px 25px;
-  color: #dc3545;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar nav ul li:hover {
-  background-color: #f1b0b7;
-}
-
-.sidebar nav ul li.active {
-  background-color: #dc3545;
-  color: #fff;
-  font-weight: bold;
-  border-left: 4px solid #fff;
-}
-
-/* Main Section */
-.main {
-  flex: 1;
-  padding: 30px;
-}
+/* Profile Content Container */
+/* Styles now inherited from MainLayout.page-content */
 
 /* Header Section */
 .header {
@@ -99,12 +20,12 @@
 }
 
 .edit-icon {
-  color: #dc3545;
+  color: #667eea;
   text-decoration: none;
 }
 
 .edit-icon:hover {
-  color: #c82333;
+  color: #764ba2;
 }
 
 /* Profile Grid/Card */
@@ -126,11 +47,13 @@
   width: 100px;
   border-radius: 50%;
   margin-bottom: 15px;
+  position: absolute;
 }
 
 .profile-card p {
   margin: 8px 0;
   font-size: 16px;
+  color: #333;
 }
 
 /* General container for edit profile page */
@@ -179,7 +102,7 @@
 /* Input field focus effect */
 .edit-profile-container input:focus {
   outline: none;
-  border-color: #c82333;
+  border-color: #667eea;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
 }
 
@@ -187,7 +110,7 @@
 .edit-profile-container button {
   padding: 12px;
   font-size: 18px;
-  background-color: #c82333;
+  background-color: #667eea;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -197,7 +120,7 @@
 
 /* Button hover effect */
 .edit-profile-container button:hover {
-  background-color: #c82333;
+  background-color: #764ba2;
 }
 
 .form-group label {
@@ -213,6 +136,8 @@
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  background-color: #fcfbfd;
+  color: #333;
   font-size: 16px;
 }
 

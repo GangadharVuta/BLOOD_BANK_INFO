@@ -139,7 +139,7 @@
 }
 
 .card-detail-highlighted {
-  background: linear-gradient(135deg, var(--button-bg) 0%, #a71e2a 100%);
+  background: linear-gradient(135deg, var(--button-bg) 0%, #764ba2 100%);
   color: white !important;
   padding: 4px 8px;
   border-radius: 4px;
@@ -149,7 +149,7 @@
 /* Highlighted Value (e.g., Blood Group Badge) */
 .card-highlight {
   display: inline-block;
-  background: linear-gradient(135deg, var(--button-bg) 0%, #a71e2a 100%);
+  background: linear-gradient(135deg, var(--button-bg) 0%, #764ba2 100%);
   color: white;
   padding: 8px 14px;
   border-radius: 6px;

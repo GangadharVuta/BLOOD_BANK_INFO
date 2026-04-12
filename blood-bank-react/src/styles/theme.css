@@ -17,13 +17,13 @@
   --shadow-color: rgba(0, 0, 0, 0.1);
 
   /* Button Colors */
-  --button-bg: #dc3545; /* Red for light theme */
-  --button-hover: #c82333; /* Darker red on hover */
+  --button-bg: #667eea; /* Blue for light theme */
+  --button-hover: #764ba2; /* Purple on hover */
 
   /* Input Colors */
   --input-bg: #ffffff;
   --input-border: #ced4da;
-  --input-focus-border: #dc3545;
+  --input-focus-border: #667eea;
 
   /* Link Colors */
   --link-color: #007bff;
@@ -45,8 +45,8 @@
   /* Action Button Colors */
   --call-btn-bg: #28a745;
   --call-btn-hover: #218838;
-  --request-btn-border: #dc3545;
-  --danger-btn-bg: #dc3545;
+  --request-btn-border: #667eea;
+  --danger-btn-bg: #667eea;
 }
 
 /* Dark Theme Variables (existing) */
@@ -66,13 +66,13 @@
   --shadow-color: rgba(0, 0, 0, 0.5);
 
   /* Button Colors */
-  --button-bg: #c82333; /* Deep red - primary CTA */
-  --button-hover: #a71e2a; /* Darker red on hover */
+  --button-bg: #667eea; /* Blue - primary CTA */
+  --button-hover: #764ba2; /* Purple on hover */
 
   /* Input Colors */
   --input-bg: #1f1f1f;
   --input-border: #404040;
-  --input-focus-border: #c82333;
+  --input-focus-border: #667eea;
 
   /* Link Colors */
   --link-color: #3498db;
@@ -94,7 +94,7 @@
   /* Action Button Colors */
   --call-btn-bg: #4caf50;
   --call-btn-hover: #45a049;
-  --request-btn-border: #c82333;
+  --request-btn-border: #667eea;
   --danger-btn-bg: #f44336;
   --danger-btn-hover: #da190b;
   
@@ -104,7 +104,7 @@
   --table-border: #404040;
   
   /* Navbar Colors */
-  --navbar-bg: linear-gradient(135deg, #d62839 0%, #c82333 100%);
+  --navbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --navbar-text: #ffffff;
   --navbar-shadow: rgba(0, 0, 0, 0.12);
   

@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 
 var authtokensSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'Users' },
-    token: { type: Buffer },
+    token: { type: String, required: true },
     deviceId: { type: String },
     role: { type: String },
     ipAddress: { type: String },

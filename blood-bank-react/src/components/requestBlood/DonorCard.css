@@ -1,29 +1,34 @@
 /**
  * ============================================
- * DONOR CARD STYLES
+ * DONOR CARD COMPONENT STYLES
  * ============================================
- * Privacy-focused donor card styling
+ * Clean, privacy-focused donor card design
+ * Displays: Blood Group | Location | Availability
+ * Hides: Name | Phone (shared only via chat)
+ * Mobile-first responsive design
  */
 
+/* ============= CARD CONTAINER ============= */
 .donor-card {
   position: relative;
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
   border: 2px solid #e8e8f0;
-  border-radius: 16px;
+  border-radius: 15px;
   padding: 0;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   height: 100%;
   cursor: pointer;
+  min-height: 380px;
 }
 
 .donor-card:hover {
   border-color: #667eea;
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
-  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(102, 126, 234, 0.18);
+  transform: translateY(-6px);
 }
 
 .donor-card.selected {
@@ -32,37 +37,44 @@
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
 }
 
-/* ============= SELECTION OVERLAY ============= */
+/* ============= SELECTION CHECKBOX ============= */
 .card-select-overlay {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 14px;
+  left: 14px;
   z-index: 10;
 }
 
 .donor-checkbox {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
   accent-color: #667eea;
+  transition: transform 0.2s ease;
 }
 
 .donor-checkbox:hover {
-  transform: scale(1.1);
+  transform: scale(1.12);
+}
+
+.donor-checkbox:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
 }
 
 /* ============= DONOR BADGE ============= */
 .donor-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 14px;
+  right: 14px;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .donor-badge.registered {
@@ -72,18 +84,22 @@
 }
 
 .donor-badge.manual {
-  background: rgba(33, 150, 243, 0.15);
-  color: #1565c0;
-  border: 1px solid rgba(33, 150, 243, 0.3);
+  background: rgba(102, 126, 234, 0.15);
+  color: #5568d3;
+  border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
-/* ============= CARD CONTENT ============= */
+.donor-badge:hover {
+  backdrop-filter: blur(15px);
+}
+
+/* ============= CARD CONTENT SECTION ============= */
 .card-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px;
+  padding: 24px 18px;
   text-align: center;
 }
 
@@ -91,12 +107,13 @@
 .blood-group-section {
   display: flex;
   justify-content: center;
-  margin: 8px 0;
+  align-items: center;
+  margin: 6px 0;
 }
 
 .blood-group-circle {
-  width: 80px;
-  height: 80px;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -105,30 +122,30 @@
   justify-content: center;
   font-size: 32px;
   font-weight: 700;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
-  transition: transform 0.3s ease;
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
 }
 
 .donor-card:hover .blood-group-circle {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 /* ============= LOCATION SECTION ============= */
 .location-section {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-}
-
-.location-item {
-  display: flex;
-  align-items: center;
   gap: 12px;
-  flex: 1;
+  padding: 12px;
+  background: rgba(102, 126, 234, 0.04);
+  border-radius: 12px;
 }
 
 .location-icon {
-  font-size: 24px;
+  font-size: 22px;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .location-text {
@@ -138,18 +155,19 @@
 
 .location-label {
   margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: #999;
+  font-size: 10px;
+  font-weight: 700;
+  color: #aaa;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .location-value {
-  margin: 4px 0 0 0;
+  margin: 3px 0 0 0;
   font-size: 14px;
   font-weight: 600;
   color: #263238;
+  line-height: 1.35;
   word-break: break-word;
 }
 
@@ -158,20 +176,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  background: rgba(102, 126, 234, 0.05);
-  border-radius: 12px;
-}
-
-.availability-item {
-  display: flex;
-  align-items: center;
   gap: 12px;
-  flex: 1;
+  padding: 12px 14px;
+  background: rgba(102, 126, 234, 0.06);
+  border-radius: 12px;
+  border-left: 3px solid #667eea;
 }
 
 .availability-icon {
-  font-size: 24px;
+  font-size: 20px;
+  flex-shrink: 0;
 }
 
 .availability-text {
@@ -181,17 +195,17 @@
 
 .availability-label {
   margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: #999;
+  font-size: 10px;
+  font-weight: 700;
+  color: #aaa;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .availability-value {
-  margin: 4px 0 0 0;
-  font-size: 14px;
-  font-weight: 600;
+  margin: 3px 0 0 0;
+  font-size: 13px;
+  font-weight: 700;
   padding: 4px 8px;
   border-radius: 6px;
   display: inline-block;
@@ -199,108 +213,130 @@
 
 .status-available {
   color: #2e7d32;
-  background: rgba(76, 175, 80, 0.1);
+  background: rgba(76, 175, 80, 0.12);
 }
 
 .status-unavailable {
   color: #c62828;
-  background: rgba(244, 67, 54, 0.1);
+  background: rgba(244, 67, 54, 0.12);
 }
 
 .status-pending {
   color: #f57c00;
-  background: rgba(255, 152, 0, 0.1);
+  background: rgba(255, 152, 0, 0.12);
 }
 
 /* ============= PRIVACY NOTICE ============= */
 .privacy-notice {
   font-size: 11px;
-  color: #999;
+  color: #aaa;
   text-align: center;
-  padding: 8px 12px;
-  background: rgba(102, 126, 234, 0.05);
+  padding: 10px 12px;
+  background: rgba(102, 126, 234, 0.06);
   border-radius: 8px;
-  border-left: 3px solid #667eea;
+  font-weight: 500;
+  margin-top: 2px;
 }
 
-/* ============= CARD ACTIONS ============= */
+/* ============= ACTION BUTTONS SECTION ============= */
 .card-actions {
   display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  background: rgba(0, 0, 0, 0.02);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  gap: 10px;
+  padding: 14px 16px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0));
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .action-btn {
   flex: 1;
-  padding: 10px 12px;
+  padding: 11px 12px;
   border: none;
-  border-radius: 10px;
+  border-radius: 11px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
+  font-family: inherit;
 }
 
-/* Chat Button */
+.action-btn:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Chat Button - Primary Action */
 .chat-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
 }
 
 .chat-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 16px rgba(102, 126, 234, 0.4);
 }
 
 .chat-btn:active {
   transform: translateY(0);
 }
 
-/* Request/Select Button */
+/* Request/Select Button - Secondary Action */
 .request-btn {
-  background: #f0f0f0;
+  background: #f5f5f7;
   color: #666;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #e8e8e8;
+  font-weight: 700;
 }
 
 .request-btn:hover {
-  background: #e8e8e8;
-  border-color: #d0d0d0;
+  background: #ececf0;
+  border-color: #d8d8e0;
 }
 
 .request-btn.active {
-  background: rgba(76, 175, 80, 0.1);
+  background: rgba(76, 175, 80, 0.15);
   color: #2e7d32;
   border-color: #4caf50;
+  font-weight: 700;
 }
 
 .request-btn.active:hover {
-  background: rgba(76, 175, 80, 0.2);
+  background: rgba(76, 175, 80, 0.22);
+  border-color: #66bb6a;
 }
 
-/* ============= RESPONSIVE DESIGN ============= */
+/* ============= TABLET RESPONSIVE DESIGN (768px) ============= */
 @media (max-width: 768px) {
   .donor-card {
-    min-height: auto;
+    min-height: 360px;
+    border-radius: 14px;
   }
 
   .card-content {
-    gap: 12px;
-    padding: 16px;
+    gap: 14px;
+    padding: 20px 16px;
   }
 
   .blood-group-circle {
-    width: 70px;
-    height: 70px;
-    font-size: 28px;
+    width: 72px;
+    height: 72px;
+    font-size: 30px;
+  }
+
+  .location-icon,
+  .availability-icon {
+    font-size: 20px;
+  }
+
+  .location-label,
+  .availability-label {
+    font-size: 9px;
+    letter-spacing: 0.5px;
   }
 
   .location-value,
@@ -309,25 +345,110 @@
   }
 
   .card-actions {
-    gap: 6px;
-    padding: 10px 12px;
+    gap: 8px;
+    padding: 12px 14px;
   }
 
   .action-btn {
-    padding: 8px 10px;
+    padding: 10px 11px;
     font-size: 12px;
+    gap: 4px;
   }
 }
 
+/* ============= MOBILE RESPONSIVE DESIGN (480px) ============= */
 @media (max-width: 480px) {
   .donor-card {
+    min-height: 340px;
     border-radius: 12px;
   }
 
+  .card-select-overlay {
+    top: 12px;
+    left: 12px;
+  }
+
+  .donor-checkbox {
+    width: 20px;
+    height: 20px;
+  }
+
+  .donor-badge {
+    top: 12px;
+    right: 12px;
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
   .card-content {
+    gap: 12px;
+    padding: 16px 14px;
+  }
+
+  .blood-group-section {
+    margin: 2px 0;
+  }
+
+  .blood-group-circle {
+    width: 65px;
+    height: 65px;
+    font-size: 26px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  .donor-card:hover .blood-group-circle {
+    transform: scale(1.05);
+  }
+
+  .location-section,
+  .availability-section {
     gap: 10px;
-    padding: 14px;
-    text-align: center;
+    padding: 10px 12px;
+  }
+
+  .location-icon,
+  .availability-icon {
+    font-size: 18px;
+  }
+
+  .location-label,
+  .availability-label {
+    font-size: 9px;
+  }
+
+  .location-value,
+  .availability-value {
+    font-size: 12px;
+  }
+
+  .privacy-notice {
+    font-size: 10px;
+    padding: 8px 10px;
+  }
+
+  .card-actions {
+    flex-direction: row;
+    gap: 8px;
+    padding: 12px 12px;
+  }
+
+  .action-btn {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 12px;
+    min-height: 40px;
+  }
+}
+
+/* ============= SMALL PHONES (360px) ============= */
+@media (max-width: 360px) {
+  .donor-card {
+    min-height: 320px;
+  }
+
+  .card-content {
+    gap: 11px;
+    padding: 14px 12px;
   }
 
   .blood-group-circle {
@@ -336,36 +457,27 @@
     font-size: 24px;
   }
 
-  .location-item,
-  .availability-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 6px;
-  }
-
-  .location-text,
-  .availability-text {
-    text-align: center;
-  }
-
-  .donor-badge {
-    font-size: 10px;
-    padding: 4px 8px;
-    top: 8px;
-    right: 8px;
-  }
-
-  .card-actions {
-    flex-direction: column;
-    gap: 6px;
+  .location-value,
+  .availability-value {
+    font-size: 11px;
   }
 
   .action-btn {
-    width: 100%;
+    font-size: 11px;
+    padding: 9px 7px;
+  }
+}
+
+/* ============= PRINT STYLES ============= */
+@media print {
+  .donor-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
   }
 
-  .privacy-notice {
-    font-size: 10px;
+  .card-select-overlay,
+  .card-actions {
+    display: none;
   }
 }
 
@@ -373,35 +485,36 @@
 @media (prefers-color-scheme: dark) {
   .donor-card {
     background: linear-gradient(135deg, #2d2d2d 0%, #1f1f2e 100%);
-    border-color: #404040;
+    border-color: #404050;
   }
 
   .donor-card:hover {
-    border-color: #667eea;
     background: linear-gradient(135deg, #3a3a50 0%, #2d2d42 100%);
+    border-color: #667eea;
   }
 
   .donor-card.selected {
     background: linear-gradient(135deg, #3a4d7a 0%, #2d3f60 100%);
   }
 
+  .location-section,
+  .availability-section,
+  .privacy-notice {
+    background: rgba(102, 126, 234, 0.08);
+  }
+
   .card-content {
     color: #e0e0e0;
   }
 
+  .location-label,
+  .availability-label {
+    color: #999;
+  }
+
   .location-value,
   .availability-value {
-    color: #e0e0e0;
-  }
-
-  .location-label,
-  .availability-label,
-  .privacy-notice {
-    color: #aaa;
-  }
-
-  .availability-section {
-    background: rgba(102, 126, 234, 0.1);
+    color: #e8e8e8;
   }
 
   .card-actions {
@@ -411,11 +524,17 @@
 
   .request-btn {
     background: #3a3a3a;
-    color: #ddd;
+    color: #e0e0e0;
     border-color: #505050;
   }
 
   .request-btn:hover {
     background: #454545;
+    border-color: #606060;
+  }
+
+  .request-btn.active {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: #66bb6a;
   }
 }

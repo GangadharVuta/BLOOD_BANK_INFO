@@ -8,6 +8,7 @@ const Donors = require('../Donor/Schema').Donors; // added import for manually a
 const Model = require("../Base/Model");
 const userProjection = require('../User/Projection')
 const RequestBody = require("../../services/RequestBody");
+const logger = require("../../../utils/logger");
 require('dotenv').config(); // Make sure this line is near the top
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -20,14 +21,14 @@ try {
         client = require('twilio')(accountSid, authToken);
     }
 } catch (e) {
-    console.warn('Twilio package not available or not configured; using mock client.');
+    logger.warn('Twilio package not available or not configured; using mock client.');
 }
 
 if (!client) {
     client = {
         messages: {
             create: (opts) => {
-                console.warn('Twilio disabled - message not sent. Payload:', opts);
+                logger.warn('Twilio disabled - message not sent. Payload:', opts);
                 return Promise.resolve({ sid: 'MOCK' });
             }
         }
@@ -64,7 +65,7 @@ class RequestsController extends Controller {
             let donors = await Users.find({ $and: query }, userProjection.user);
             return _.isEmpty(donors) ? this.res.send({ status: 0, message: "Donor details not found" }) : this.res.send({ status: 1, data: donors });
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in getBloodRequests:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while fetching donors list' });
         }
 
@@ -125,14 +126,14 @@ class RequestsController extends Controller {
 
                     // Null check before accessing donor properties
                     if (!donorRecord) {
-                        console.warn(`Donor ${data.userIds[i]} not found in Users or Donors, skipping notification`);
+                        logger.warn(`Donor ${data.userIds[i]} not found in Users or Donors, skipping notification`);
                         continue;
                     }
 
                     const acceptUrl = `http://localhost:4000/api/requests/accept/${request.requestId}/donor/${data.userIds[i]}`;
                     const rejectUrl = `http://localhost:4000/api/requests/reject/${request.requestId}/donor/${data.userIds[i]}`;
-                    console.log(`acceptUrl: ${acceptUrl}`);
-                    console.log(`rejectUrl: ${rejectUrl}`);
+                    logger.debug(`acceptUrl: ${acceptUrl}`);
+                    logger.debug(`rejectUrl: ${rejectUrl}`);
 
                     // Safe WhatsApp message construction with fallback values
                     const donorName = donorRecord.userName || donorRecord.UserName || donorRecord.name || 'Donor';
@@ -150,14 +151,14 @@ class RequestsController extends Controller {
                                 `https://wa.me/?text=Reject&redirect_uri=${encodeURIComponent(rejectUrl)}`
                             ]
                         })
-                        .then(message => console.log(message.sid))
-                        .catch(err => console.error(err));
+                        .then(message => logger.debug(`SMS message sent with SID: ${message.sid}`))
+                        .catch(err => logger.error('SMS send error:', { error: err.message }));
 
                 }
             }
             return this.res.send({ status: 1, message: "Request send successfully" });
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in sendRequests:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while sending requests' });
         }
     }
@@ -201,11 +202,11 @@ class RequestsController extends Controller {
                     to: `whatsapp:+91${requester.phoneNumber}`,
                     body: message
                 })
-                .then(message => console.log(message.sid))
-                .catch(err => console.error(err));
+                .then(message => logger.debug(`SMS message sent with SID: ${message.sid}`))
+                .catch(err => logger.error('SMS send error:', { error: err.message }));
             return this.res.send({ status: 1, message: "Donor accepted" })
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in acceptRequest:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while accepting request' });
         }
     }
@@ -221,7 +222,7 @@ class RequestsController extends Controller {
             await Requests.findOneAndUpdate({ donorId, requestId: requestId }, { isRejectedByUser: true });
             return this.res.send({ status: 1, message: "Donor rejected" })
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in rejectRequest:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while rejecting request' });
         }
     }
@@ -238,7 +239,7 @@ class RequestsController extends Controller {
             await Requests.updateMany({ requestId: requestId, requestedBy: currentUser }, { $set: { isDeleted: true } }, { upsert: true, new: true });
             return this.res.send({ status: 1, message: "Cancelled request" })
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in cancelRequest:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while cancelling request' });
         }
     }
@@ -276,7 +277,7 @@ class RequestsController extends Controller {
                     query.push({ isAcceptedByUser: false, isRejectedByUser: false, isDeleted: false })
                 }
             }
-            console.log(`query: ${JSON.stringify(query)}`)
+            logger.debug(`getDonorsListForRequests query: ${JSON.stringify(query)}`);
 
             // perform lookup against both users and manual donors collections
             let requests = await Requests.aggregate([
@@ -324,7 +325,7 @@ class RequestsController extends Controller {
             return _.isEmpty(requests) ? this.res.send({ status: 0, message: "Request details not found" }) : this.res.send({ status: 1, data: requests });
 
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in getDonorsListForRequests:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while fetching requests' });
         }
     }
@@ -337,7 +338,7 @@ class RequestsController extends Controller {
     async getRequestIds() {
         try {
             const currentUser = this.req.currentUser && this.req.currentUser._id ? this.req.currentUser._id : "";
-            console.log(`currentUser: ${currentUser}`)
+            logger.debug(`getRequestIds - currentUser: ${currentUser}`);
             let requests = await Requests.aggregate([
                 { $match: { requestedBy: new ObjectId(currentUser) } },
                 {
@@ -356,7 +357,7 @@ class RequestsController extends Controller {
             return _.isEmpty(requests) ? this.res.send({ status: 0, message: "Request details not found" }) : this.res.send({ status: 1, data: requests });
 
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in getRequestIds:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while fetching request IDs' });
         }
     }
@@ -430,8 +431,60 @@ class RequestsController extends Controller {
                 : this.res.send({ status: 1, data: donors });
 
         } catch (error) {
-            console.log("error = ", error);
+            logger.error("Error in getRequestDonors:", { error: error.message, stack: error.stack });
             this.res.send({ status: 0, message: error.message || 'An error occurred while fetching request donors' });
+        }
+    }
+
+    /********************************************************
+     Purpose: get requests received by a donor (as donorId)
+     Parameter: none (uses currentUser._id)
+     Return: JSON String
+    ********************************************************/
+    async getDonorReceivedRequests() {
+        try {
+            const currentUser = this.req.currentUser && this.req.currentUser._id ? this.req.currentUser._id : "";
+
+            if (!currentUser) {
+                return this.res.send({ status: 0, message: "User not authenticated" });
+            }
+
+            // Find all requests where this user is the donorId
+            let requests = await Requests.aggregate([
+                { $match: { donorId: new ObjectId(currentUser), isDeleted: false } },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "requestedBy",
+                        foreignField: "_id",
+                        as: "requesterDetails"
+                    }
+                },
+                { $unwind: "$requesterDetails" },
+                {
+                    $project: {
+                        _id: 1,
+                        requestId: 1,
+                        bloodGroup: "$bloodGroup",
+                        address: "$address",
+                        pincode: "$pincode",
+                        isAcceptedByUser: 1,
+                        isRejectedByUser: 1,
+                        createdAt: 1,
+                        requesterName: { $ifNull: ["$requesterDetails.userName", "$requesterDetails.name"] },
+                        requesterPhone: { $ifNull: ["$requesterDetails.phoneNumber", "$requesterDetails.phone"] }
+                    }
+                },
+                { $sort: { createdAt: -1 } }
+            ]);
+
+            return _.isEmpty(requests) 
+                ? this.res.send({ status: 0, message: "No requests found" }) 
+                : this.res.send({ status: 1, data: requests });
+
+        } catch (error) {
+            logger.error("Error in getDonorReceivedRequests:", { error: error.message, stack: error.stack });
+            this.res.send({ status: 0, message: error.message || 'An error occurred while fetching your requests' });
         }
     }
 }

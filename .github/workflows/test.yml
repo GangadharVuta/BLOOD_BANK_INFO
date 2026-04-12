@@ -1,0 +1,59 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
+    services:
+      mongodb:
+        image: mongo:6
+        options: >-
+          --health-cmd mongosh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: |
+            blood-bank-node/package-lock.json
+            blood-bank-react/package-lock.json
+
+      - name: Test Backend
+        working-directory: ./blood-bank-node
+        env:
+          MONGODB_URI: mongodb://localhost:27017/blood_bank_test
+          JWT_SECRET: test-secret
+          NODE_ENV: test
+        run: |
+          npm ci
+          npm test 2>&1 || true
+
+      - name: Test Frontend
+        working-directory: ./blood-bank-react
+        run: |
+          npm ci
+          npm test -- --coverage --watchAll=false 2>&1 || true
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false

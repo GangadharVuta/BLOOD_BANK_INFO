@@ -3,11 +3,19 @@
  * ADMIN AUTHENTICATION MIDDLEWARE
  * ============================================
  * Handles JWT verification and role-based access control
+ * Includes admin-specific authentication for dashboard
  */
 
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+// Validate required secrets
+const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET;
+const ADMIN_JWT_EXPIRY = process.env.ADMIN_JWT_EXPIRY || '24h';
+
+if (!JWT_SECRET || !ADMIN_JWT_SECRET) {
+  throw new Error('Missing required JWT secrets in environment variables: JWT_SECRET and ADMIN_JWT_SECRET');
+}
 
 /**
  * Verify JWT Token
@@ -84,4 +92,74 @@ exports.checkPermission = (permission) => {
 
     next();
   };
+};
+
+/**
+ * ============================================
+ * ADMIN DASHBOARD SPECIFIC MIDDLEWARE
+ * ============================================
+ */
+
+/**
+ * Verify Admin JWT Token
+ * Checks authorization header and validates admin token
+ * Used exclusively for admin dashboard routes
+ */
+exports.verifyAdminToken = (req, res, next) => {
+  try {
+    // Extract token from header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'No authorization token provided'
+      });
+    }
+
+    const token = authHeader.substring(7);
+
+    // Verify token with admin secret
+    const decoded = jwt.verify(token, ADMIN_JWT_SECRET);
+
+    // Check if admin role
+    if (decoded.role !== 'Admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Insufficient permissions'
+      });
+    }
+
+    // Add admin info to request
+    req.currentAdmin = decoded;
+    next();
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token has expired'
+      });
+    }
+
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid or expired token'
+    });
+  }
+};
+
+/**
+ * Generate Admin JWT Token
+ * Creates JWT token for admin login
+ * Token includes admin ID, email, and role
+ */
+exports.generateAdminToken = (adminData) => {
+  return jwt.sign(
+    {
+      _id: adminData._id,
+      email: adminData.email,
+      role: 'Admin'
+    },
+    ADMIN_JWT_SECRET,
+    { expiresIn: ADMIN_JWT_EXPIRY }
+  );
 };

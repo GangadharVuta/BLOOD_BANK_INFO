@@ -318,16 +318,62 @@
   transform: translateY(0);
 }
 
-/* Loading State */
-.loading,
-.no-feedback {
-  text-align: center;
-  padding: 60px 20px;
-  color: #999;
-  font-size: 1.1rem;
+/* Recommend Badge */
+.recommend-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: #4caf50;
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  animation: slideInRight 0.4s ease-out;
 }
 
-/* Responsive Design */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Additional Statistics Card - 4th card styling */
+.platform-stats .stat-card:nth-child(4) {
+  grid-column: auto;
+}
+
+
 @media (max-width: 768px) {
   .feedback-section {
     padding: 40px 15px;
@@ -405,6 +451,11 @@
   .feedback-blood-group {
     padding: 5px 10px;
     font-size: 0.8rem;
+  }
+
+  .recommend-badge {
+    padding: 4px 10px;
+    font-size: 0.75rem;
   }
 }
 
@@ -530,6 +581,10 @@
 
   .feedback-role {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .recommend-badge {
+    background: #45a049;
   }
 
   .feedback-cta {

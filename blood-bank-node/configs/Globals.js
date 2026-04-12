@@ -55,8 +55,14 @@ class Globals {
     // Validating Token
     static async isAuthorised(req, res, next) {
         try {
-            const token = req.headers.authorization;
-            if (!token) return res.status(401).json({ status: 0, message: "Please send authorization token" });
+            let authorization = req.headers.authorization;
+            if (!authorization) return res.status(401).json({ status: 0, message: "Please send authorization token" });
+
+            // Extract token from "Bearer {token}" format
+            let token = authorization;
+            if (authorization.startsWith('Bearer ')) {
+                token = authorization.slice(7); // Remove 'Bearer ' prefix
+            }
 
             const authenticate = new Globals();
 

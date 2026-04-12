@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import './RequestBloodPage.css';
 import DonorCard from './DonorCard';
-import Navbar from '../navBar/Navbar';
-import Sidebar from '../sidebar/sidebar';
 
 const RequestBloodPage = () => {
   const navigate = useNavigate();
@@ -154,20 +152,15 @@ const RequestBloodPage = () => {
   };
 
   return (
-    <div>
-      <Navbar />
-      <div className="request-blood-page responsive-layout">
-        <Sidebar />
+    <div className="request-blood-content">
+      {/* Header */}
+      <div className="request-header">
+        <h1>🩸 Request Blood</h1>
+        <p>Find donors and request blood. Select donors below and proceed to submit request.</p>
+      </div>
 
-        <div className="request-blood-content">
-          {/* Header */}
-          <div className="request-header">
-            <h1>🩸 Request Blood</h1>
-            <p>Find donors and request blood. Select donors below and proceed to submit request.</p>
-          </div>
-
-          {/* Filters Section */}
-          <div className="filters-section">
+      {/* Filters Section */}
+      <div className="filters-section">
             <div className="filter-group">
               <label>🔍 Search by Name</label>
               <input
@@ -262,9 +255,7 @@ const RequestBloodPage = () => {
               </button>
             </div>
           )}
-        </div>
       </div>
-    </div>
   );
 };
 

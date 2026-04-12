@@ -251,13 +251,13 @@
   }
 
   .form-group label {
-    color: #ddd;
+    color: #1e1e1e;
   }
 
   .form-group input {
-    background: #2a2a2a;
+    background: #fcfafa;
     border-color: #444;
-    color: #fff;
+    color: #070707;
   }
 
   .form-group input::placeholder {

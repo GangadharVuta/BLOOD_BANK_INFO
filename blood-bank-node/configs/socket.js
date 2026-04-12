@@ -3,15 +3,12 @@
  * SOCKET.IO CONFIGURATION
  * ============================================
  * Real-time communication setup for chat
- * Handles:
- * - Connection/disconnection events
- * - Real-time message broadcasting
- * - Online/offline status tracking
- * - Message delivery confirmation
+ * Handles JWT authentication and connection validation
  */
 
 const socketIO = require('socket.io');
 const jwt = require('jsonwebtoken');
+const logger = require('../utils/logger');
 const { Messages } = require('../app/modules/Chat/Schema');
 const ChatController = require('../app/modules/Chat/Controller');
 const { ObjectId } = require('mongodb');
@@ -43,7 +40,14 @@ function initializeSocket(httpServer) {
         transports: ['websocket', 'polling']
     });
 
-    // Middleware to authenticate socket connections
+    // Validate JWT_SECRET exists - no weak fallback default
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+        logger.error('Socket.io requires JWT_SECRET environment variable');
+        throw new Error('Socket.io requires JWT_SECRET environment variable');
+    }
+
+    // Middleware to authenticate socket connections with JWT validation
     io.use((socket, next) => {
         try {
             const token = socket.handshake.auth.token;
@@ -52,12 +56,13 @@ function initializeSocket(httpServer) {
                 return next(new Error('Authentication required'));
             }
 
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+            const decoded = jwt.verify(token, JWT_SECRET);
             socket.userId = decoded.id || decoded._id;
             socket.userName = decoded.name;
+            logger.debug('Socket authenticated', { userId: socket.userId });
             next();
         } catch (error) {
-            console.error('Socket authentication error:', error.message);
+            logger.warn('Socket authentication failed', { error: error.message });
             next(new Error('Invalid token'));
         }
     });
@@ -68,7 +73,7 @@ function initializeSocket(httpServer) {
      */
     io.on('connection', (socket) => {
         const userId = socket.userId;
-        console.log(`✅ User ${userId} connected with socket ${socket.id}`);
+        logger.info(`User connected`, { userId, socketId: socket.id });
 
         // Store user connection info
         activeUsers.set(userId, {

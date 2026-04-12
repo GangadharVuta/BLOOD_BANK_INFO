@@ -8,16 +8,10 @@
   box-sizing: border-box;
 }
 
-.request-blood-page {
-  display: flex;
-  min-height: calc(100vh - 70px);
-  background-color: var(--bg-primary);
-}
-
 .request-blood-content {
-  flex: 1;
   padding: 30px;
-  overflow-y: auto;
+  background-color: var(--bg-primary);
+  width: 100%;
 }
 
 /* ========== HEADER ========== */
@@ -429,11 +423,6 @@
 
 /* Mobile (768px and below) */
 @media (max-width: 768px) {
-  .request-blood-page {
-    flex-direction: column;
-    min-height: auto;
-  }
-
   .request-blood-content {
     padding: 15px;
   }
@@ -556,7 +545,7 @@
 
 /* ========== DARK MODE SUPPORT ========== */
 @media (prefers-color-scheme: dark) {
-  .request-blood-page {
+  .request-blood-content {
     background: linear-gradient(135deg, #1a1a1a 0%, #252a3a 100%);
   }
 

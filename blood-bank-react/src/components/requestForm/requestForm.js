@@ -38,6 +38,23 @@ const RequestForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validate form data
+        if (!formData.pincode || !formData.address) {
+            swal("Error", "Please fill in all fields (Pincode and Address)", "error");
+            return;
+        }
+
+        if (!formData.userIds || formData.userIds.length === 0) {
+            swal("Error", "No donors selected", "error");
+            return;
+        }
+
+        // Validate pincode (numeric, between 5-6 digits)
+        if (!/^\d{5,6}$/.test(formData.pincode)) {
+            swal("Error", "Please enter a valid pincode", "error");
+            return;
+        }
+
         try {
             const token = localStorage.getItem("token");
             
@@ -46,12 +63,14 @@ const RequestForm = () => {
                 return;
             }
 
+            // Send blood request using JWT authentication only
+            // CSRF is NOT needed for JWT-protected API endpoints
             const response = await axios.post(
                 "http://localhost:4000/api/requests/requestDonors",
                 formData,
                 {
                     headers: {
-                        Authorization: token,
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json"
                     }
                 }
@@ -60,17 +79,22 @@ const RequestForm = () => {
             if (response.data.status === 0) {
                 swal("Error", response.data.message, "error");
             } else {
-                swal("Success", "Blood request sent successfully", "success");
-                navigate("/dashboard");
+                swal({
+                    title: "Success!",
+                    text: "Blood request sent successfully",
+                    icon: "success",
+                    button: "OK"
+                }).then(() => {
+                    navigate("/dashboard");
+                });
             }
         } catch (error) {
-            console.error('Request form error:', error.response?.status, error.message);
             if (error.response?.status === 401) {
                 swal("Error", "Session expired. Please login again.", "error");
                 localStorage.removeItem("token");
                 navigate("/login");
             } else {
-                swal("Error", "Failed to send request. Please try again.", "error");
+                swal("Error", error.response?.data?.message || "Failed to send request. Please try again.", "error");
             }
         }
     };

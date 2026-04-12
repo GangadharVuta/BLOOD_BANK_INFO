@@ -10,6 +10,7 @@ import { NotificationProvider } from './context/NotificationContext';
 import SEOHead from './components/common/SEOHead';
 import Analytics from './components/common/Analytics';
 import MainLayout from './components/common/MainLayout';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 import RegisterPage from './components/register/RegisterPage';
 import HomePage from './components/home/HomePage';
@@ -27,6 +28,8 @@ import Dashboard from './components/dashboard/dashboard';
 import NearbyBloodBanks from './components/nearbyBloodBanks/nearbyBloodBanks';
 import AddDonor from './components/donor/AddDonor';
 import ListDonors from './components/donor/ListDonors';
+import FeedbackForm from './components/home/FeedbackForm';
+import DonorRequests from './components/donorRequests/DonorRequests';
 
 // Admin Components
 import AdminLogin from './components/admin/AdminLogin';
@@ -43,44 +46,45 @@ function App() {
   useEffect(() => {
     const initFCM = async () => {
       try {
+        // Check browser support first
         if (!("Notification" in window)) {
-          console.warn("❌ Browser does not support notifications");
+          console.info("ℹ️ Browser does not support notifications");
           return;
         }
 
-        const permission = await Notification.requestPermission();
-
-        if (permission !== "granted") {
-          console.warn("🔕 Notification permission denied");
+        // Don't request permission on load, wait for user interaction
+        if (Notification.permission === "denied") {
+          console.info("ℹ️ Notifications permission denied by user");
           return;
         }
 
-        const token = await getFcmToken();
-        console.log("🔔 FCM Token from App.js:", token);
-
-        if (!token) return;
-
-        const authToken = localStorage.getItem("token");
-        if (!authToken) {
-          console.warn("⚠️ User not logged in, skipping token save");
-          return;
-        }
-
-        // ✅ SEND TOKEN TO BACKEND
-        await axios.post(
-          "/api/users/save-fcm-token",
-          { fcmToken: token },
-          {
-            headers: {
-              Authorization: authToken,
-            },
+        if (Notification.permission === "granted") {
+          const token = await getFcmToken();
+          if (!token) {
+            console.info("ℹ️ FCM token not available, messaging may not be supported");
+            return;
           }
-        );
 
-        console.log("✅ FCM token saved in backend");
+          const authToken = localStorage.getItem("token");
+          if (!authToken) {
+            console.debug("⚠️ User not logged in, skipping FCM token save");
+            return;
+          }
 
+          await axios.post(
+            "/api/users/save-fcm-token",
+            { fcmToken: token },
+            {
+              headers: {
+                Authorization: authToken,
+              },
+            }
+          );
+          console.log("✅ FCM token saved successfully");
+        }
       } catch (error) {
-        console.error("❌ FCM init error:", error);
+        // Silently ignore FCM errors - it's not critical
+        console.debug("ℹ️ FCM setup skipped:", error.message);
       }
     };
 
@@ -110,80 +114,89 @@ const saveFcmToken = async (token) => {
     <NotificationProvider>
       <LanguageProvider>
         <ThemeProvider>
-        <SEOHead />
-        <BrowserRouter>
-          <Analytics />
-          <MainLayout>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/about" element={<AboutUsPage />} />
-              <Route path="/faqs" element={<FAQsPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/edit-profile" element={<EditProfile />} />
-              <Route path="/profile" element={<DonorProfile />} />
-              <Route path="/change-password" element={<ChangePassword />} />
-              <Route path="/request-blood" element={<RequestBloodPage />} />
-              <Route path="/request-blood-form" element={<RequestForm />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/nearby-blood-banks" element={<NearbyBloodBanks />} />
-              <Route path="/add-donor" element={<AddDonor />} />
-              <Route path="/list-donors" element={<ListDonors />} />
+          <SEOHead />
+          <ErrorBoundary>
+            <BrowserRouter>
+              <Analytics />
+              <Routes>
+            {/* Routes with MainLayout */}
+            <Route path="/*" element={
+              <MainLayout>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutUsPage />} />
+                  <Route path="/faqs" element={<FAQsPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/login" element={<LoginForm />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/edit-profile" element={<EditProfile />} />
+                  <Route path="/profile" element={<DonorProfile />} />
+                  <Route path="/change-password" element={<ChangePassword />} />
+                  <Route path="/request-blood" element={<RequestBloodPage />} />
+                  <Route path="/request-blood-form" element={<RequestForm />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/nearby-blood-banks" element={<NearbyBloodBanks />} />
+                  <Route path="/add-donor" element={<AddDonor />} />
+                  <Route path="/list-donors" element={<ListDonors />} />
+                  <Route path="/give-feedback" element={<FeedbackForm />} />
+                  <Route path="/my-requests" element={<DonorRequests />} />
 
-              {/* Admin Routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <ProtectedAdminRoute>
-                    <AdminDashboard />
-                  </ProtectedAdminRoute>
-                }
-              />
-              <Route
-                path="/admin/donors"
-                element={
-                  <ProtectedAdminRoute>
-                    <DonorManagement />
-                  </ProtectedAdminRoute>
-                }
-              />
-              <Route
-                path="/admin/requests"
-                element={
-                  <ProtectedAdminRoute>
-                    <RequestManagement />
-                  </ProtectedAdminRoute>
-                }
-              />
-              <Route
-                path="/admin/feedback"
-                element={
-                  <ProtectedAdminRoute>
-                    <FeedbackModeration />
-                  </ProtectedAdminRoute>
-                }
-              />
-              <Route
-                path="/admin/admins"
-                element={
-                  <ProtectedAdminRoute>
-                    <AdminManagement />
-                  </ProtectedAdminRoute>
-                }
-              />
-              <Route
-                path="/admin/chat"
-                element={
-                  <ProtectedAdminRoute>
-                    <ChatMonitoring />
-                  </ProtectedAdminRoute>
-                }
-              />
-            </Routes>
-          </MainLayout>
-        </BrowserRouter>
+                  {/* Admin Routes */}
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <ProtectedAdminRoute>
+                        <AdminDashboard />
+                      </ProtectedAdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/donors"
+                    element={
+                      <ProtectedAdminRoute>
+                        <DonorManagement />
+                      </ProtectedAdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/requests"
+                    element={
+                      <ProtectedAdminRoute>
+                        <RequestManagement />
+                      </ProtectedAdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/feedback"
+                    element={
+                      <ProtectedAdminRoute>
+                        <FeedbackModeration />
+                      </ProtectedAdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/admins"
+                    element={
+                      <ProtectedAdminRoute>
+                        <AdminManagement />
+                      </ProtectedAdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/chat"
+                    element={
+                      <ProtectedAdminRoute>
+                        <ChatMonitoring />
+                      </ProtectedAdminRoute>
+                    }
+                  />
+                </Routes>
+              </MainLayout>
+            } />
+              </Routes>
+            </BrowserRouter>
+          </ErrorBoundary>
         </ThemeProvider>
         </LanguageProvider>
       </NotificationProvider>

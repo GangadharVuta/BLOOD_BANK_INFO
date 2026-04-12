@@ -11,12 +11,13 @@ import './MainLayout.css';
 import Logo from '../../assets/logo.png';
 import { useTheme } from '../../context/ThemeContext';
 import { useTranslation } from '../../context/LanguageContext';
-import { Sun, Moon, Globe, Menu, X, Home, Users, Search, Heart, MessageSquare, Settings, LogOut, MapPin } from 'lucide-react';
+import { Sun, Moon, Globe, Menu, X, Home, Users, Search, Heart, MessageSquare, Settings, LogOut, MapPin, LogIn, Send, CheckCircle } from 'lucide-react';
 
 const MainLayout = ({ children, title = "BloodConnect" }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDonorExpanded, setIsDonorExpanded] = useState(false);
   const { theme, toggleTheme, isDark } = useTheme();
   const { t, language, changeLanguage, availableLanguages } = useTranslation();
 
@@ -46,6 +47,59 @@ const MainLayout = ({ children, title = "BloodConnect" }) => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Sidebar menu item state checks
+  const isProfilePage = location.pathname === '/profile';
+  const isChangePasswordPage = location.pathname === '/change-password';
+  const isDashboardPage = location.pathname === '/dashboard';
+  const isRequestBloodPage = location.pathname === '/request-blood';
+  const isBloodBanksPage = location.pathname === '/nearby-blood-banks';
+  const isAddDonorPage = location.pathname === '/add-donor';
+  const isListDonorsPage = location.pathname === '/list-donors';
+  const isDonorActivePage = isAddDonorPage || isListDonorsPage;
+  const isFeedbackPage = location.pathname === '/give-feedback';
+  const isMyRequestsPage = location.pathname === '/my-requests';
+
+  // Sidebar menu handlers
+  const handleDonorToggle = () => {
+    setIsDonorExpanded(!isDonorExpanded);
+  };
+
+  const handleAddDonor = () => {
+    handleLinkClick('/add-donor');
+  };
+
+  const handleListDonors = () => {
+    handleLinkClick('/list-donors');
+  };
+
+  const handleChangeProfile = () => {
+    handleLinkClick('/profile');
+  };
+
+  const handleChangeDashboard = () => {
+    handleLinkClick('/dashboard');
+  };
+
+  const handleChangeRequestBlood = () => {
+    handleLinkClick('/request-blood');
+  };
+
+  const handleFindBloodBanks = () => {
+    handleLinkClick('/nearby-blood-banks');
+  };
+
+  const handleChangePassword = () => {
+    handleLinkClick('/change-password');
+  };
+
+  const handleGiveFeedback = () => {
+    handleLinkClick('/give-feedback');
+  };
+
+  const handleMyRequests = () => {
+    handleLinkClick('/my-requests');
+  };
+
   const adminNavLinks = [
     { label: 'Dashboard', path: '/admin/dashboard', icon: Settings },
     { label: 'Donor Management', path: '/admin/donors', icon: Users },
@@ -59,13 +113,17 @@ const MainLayout = ({ children, title = "BloodConnect" }) => {
     ? [
         { label: t('dashboard'), path: '/dashboard', icon: Settings },
         { label: t('profile'), path: '/profile', icon: Users },
+        { label: 'My Requests', path: '/my-requests', icon: CheckCircle },
+        { label: 'Request Blood', path: '/request-blood', icon: Heart },
+        { label: 'Give Feedback', path: '/give-feedback', icon: Send },
       ]
     : [
+        { label: 'Login', path: '/login', icon: LogIn },
+        { label: 'Request Blood', path: '/request-blood', icon: Heart },
         { label: 'Nearby Blood Banks', path: '/nearby-blood-banks', icon: MapPin },
       ];
 
   const currentNavLinks = isAdminRoute ? adminNavLinks : userNavLinks;
-  const authNavLinks = isAdminRoute ? [] : userNavLinks;
 
   return (
     <div className="main-layout">
@@ -76,7 +134,7 @@ const MainLayout = ({ children, title = "BloodConnect" }) => {
             <img src={Logo} alt="BloodConnect Logo" className="sidebar-logo" />
             <h2>BloodConnect</h2>
           </div>
-          <p className="sidebar-subtitle">{isAdminRoute ? 'Admin Panel' : 'BloodConnect'}</p>
+          {/* <p className="sidebar-subtitle">{isAdminRoute ? 'Admin Panel' : 'BloodConnect'}</p> */}
           <button
             className="sidebar-close"
             onClick={() => setSidebarOpen(false)}
@@ -88,9 +146,122 @@ const MainLayout = ({ children, title = "BloodConnect" }) => {
 
         <nav className="sidebar-nav">
           {/* Main Navigation */}
-          <div className="nav-section">
-            <h4>{isAdminRoute ? 'Management' : t('navigation')}</h4>
-            {currentNavLinks.map((link) => {
+          <div className="nav-section scrollable-nav">
+            <h4>{isAdminRoute ? 'Management' : 'Navigation'}</h4>
+            
+            {/* User Menu Items */}
+            {!isAdminRoute && isLoggedIn && (
+              <>
+                {/* Profile */}
+                <button
+                  className={`nav-item ${isProfilePage ? 'active' : ''}`}
+                  onClick={handleChangeProfile}
+                >
+                  <Users size={20} />
+                  <span>Profile</span>
+                </button>
+
+                {/* Donor Menu */}
+                <button
+                  className={`nav-item donor-menu ${isDonorActivePage ? 'active' : ''} ${isDonorExpanded ? 'expanded' : ''}`}
+                  onClick={handleDonorToggle}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                    <span>🩸</span>
+                    <span>Donor</span>
+                  </span>
+                  <span style={{ transform: isDonorExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}>▼</span>
+                </button>
+                {isDonorExpanded && (
+                  <div style={{ paddingLeft: '20px' }}>
+                    <button
+                      className={`nav-item submenu-item ${isAddDonorPage ? 'active' : ''}`}
+                      onClick={handleAddDonor}
+                    >
+                      <span>➕ Add Donor</span>
+                    </button>
+                    <button
+                      className={`nav-item submenu-item ${isListDonorsPage ? 'active' : ''}`}
+                      onClick={handleListDonors}
+                    >
+                      <span>📋 List Donors</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Dashboard */}
+                <button
+                  className={`nav-item ${isDashboardPage ? 'active' : ''}`}
+                  onClick={handleChangeDashboard}
+                >
+                  <Settings size={20} />
+                  <span>Dashboard</span>
+                </button>
+
+                {/* Request Blood */}
+                <button
+                  className={`nav-item ${isRequestBloodPage ? 'active' : ''}`}
+                  onClick={handleChangeRequestBlood}
+                >
+                  <Heart size={20} />
+                  <span>Request Blood</span>
+                </button>
+
+                {/* My Requests (Donor) */}
+                <button
+                  className={`nav-item ${isMyRequestsPage ? 'active' : ''}`}
+                  onClick={handleMyRequests}
+                >
+                  <CheckCircle size={20} />
+                  <span>My Requests</span>
+                </button>
+
+                {/* Give Feedback */}
+                <button
+                  className={`nav-item ${isFeedbackPage ? 'active' : ''}`}
+                  onClick={handleGiveFeedback}
+                >
+                  <Send size={20} />
+                  <span>Give Feedback</span>
+                </button>
+
+                {/* Find Blood Banks */}
+                <button
+                  className={`nav-item ${isBloodBanksPage ? 'active' : ''}`}
+                  onClick={handleFindBloodBanks}
+                >
+                  <MapPin size={20} />
+                  <span>Find Blood Banks</span>
+                </button>
+
+                {/* Change Password */}
+                <button
+                  className={`nav-item ${isChangePasswordPage ? 'active' : ''}`}
+                  onClick={handleChangePassword}
+                >
+                  <Settings size={20} />
+                  <span>Change Password</span>
+                </button>
+              </>
+            )}
+
+            {/* Admin Menu Items */}
+            {isAdminRoute && adminNavLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <button
+                  key={link.path}
+                  className={`nav-item ${isActive(link.path) ? 'active' : ''}`}
+                  onClick={() => handleLinkClick(link.path)}
+                >
+                  <Icon size={20} />
+                  <span>{link.label}</span>
+                </button>
+              );
+            })}
+
+            {/* Non-logged-in user menu */}
+            {!isAdminRoute && !isLoggedIn && currentNavLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <button
@@ -104,26 +275,6 @@ const MainLayout = ({ children, title = "BloodConnect" }) => {
               );
             })}
           </div>
-
-          {/* Auth Navigation (only for non-admin routes) */}
-          {!isAdminRoute && (
-            <div className="nav-section">
-              <h4>{isLoggedIn ? t('account') : t('auth')}</h4>
-              {authNavLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <button
-                    key={link.path}
-                    className={`nav-item ${isActive(link.path) ? 'active' : ''}`}
-                    onClick={() => handleLinkClick(link.path)}
-                  >
-                    <Icon size={20} />
-                    <span>{link.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
 
           {/* Logout for all authenticated users */}
           {(isLoggedIn || adminToken) && (

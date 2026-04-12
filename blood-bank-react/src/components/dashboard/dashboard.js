@@ -3,7 +3,7 @@ import axios from 'axios';
 import swal from 'sweetalert';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo.png';
-import Sidebar from '../sidebar/sidebar';
+
 import './dashboard.css'
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -71,9 +71,12 @@ const Dashboard = () => {
             let req = {
                 status: activeTab
             };
+
+            // Send request using JWT authentication only
+            // CSRF is NOT needed for JWT-protected API endpoints
             const response = await axios.post('http://localhost:4000/api/requests/getDonorsListForRequests', req, {
                 headers: {
-                    Authorization: token,
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
@@ -204,13 +207,9 @@ const Dashboard = () => {
     };
 
     return (
-        <div>
-            <div className="dashboard responsive-layout">
-                {/* Sidebar */}
-                <Sidebar />
-
-                {/* Main Content */}
-                <div className="my-requests-container">
+        <div className="dashboard-content">
+            {/* Main Content */}
+            <div className="my-requests-container">
                     <h2>Dashboard Overview</h2>
                     
                     {/* Pie Chart */}
@@ -322,7 +321,6 @@ const Dashboard = () => {
                         </div>
                     )}
                 </div>
-            </div>
         </div>
     );
 
